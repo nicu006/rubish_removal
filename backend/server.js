@@ -2,6 +2,19 @@ const express = require('express');
 const mysql = require('mysql2/promise');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
+
+// Load environment variables from .env (preferred) or env.example (fallback)
+// This makes `npm start` work without manually exporting $env:... variables.
+try {
+    const dotenv = require('dotenv');
+    const envPath = fs.existsSync(path.join(__dirname, '.env'))
+        ? path.join(__dirname, '.env')
+        : path.join(__dirname, 'env.example');
+    dotenv.config({ path: envPath });
+} catch (e) {
+    // dotenv is optional at runtime; if missing, we fall back to process.env/defaults below
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -60,6 +73,14 @@ let pool;
 
 async function initDatabase() {
     try {
+        // Helpful early error if password is required but missing
+        if (!process.env.DB_PASSWORD) {
+            console.warn(
+                "⚠️ DB_PASSWORD is empty. If your MySQL root user has a password (common with Docker/MySQL), " +
+                "create backend/.env (or edit backend/env.example) and set DB_PASSWORD, then rerun `npm start`."
+            );
+        }
+
         // First, connect without database to create it if needed
         const adminConnection = await mysql.createConnection({
             host: dbConfig.host,
