@@ -259,17 +259,28 @@ body {
     align-items: center;
     justify-content: flex-start;
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 50%, #229954 100%);
-    background-image: url('hero-background.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-image: url('truck.png');
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: scroll !important;
+    background-clip: border-box;
+    -webkit-background-size: cover !important;
+    -moz-background-size: cover !important;
+    -o-background-size: cover !important;
     color: white;
     text-align: left;
     padding-top: 80px;
     padding-left: 0;
     padding-right: 0;
     overflow: hidden;
+    will-change: auto;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    isolation: isolate;
+    contain: layout style paint;
 }
 
 .hero::before {
@@ -280,9 +291,9 @@ body {
     right: 0;
     bottom: 0;
     background: 
-        linear-gradient(135deg, rgba(46, 204, 113, 0.4) 0%, rgba(39, 174, 96, 0.4) 50%, rgba(34, 153, 84, 0.4) 100%),
-        radial-gradient(circle at 20% 50%, rgba(255,255,255,0.05) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
+        linear-gradient(135deg, rgba(46, 204, 113, 0.35) 0%, rgba(39, 174, 96, 0.35) 50%, rgba(34, 153, 84, 0.35) 100%),
+        radial-gradient(circle at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
     opacity: 1;
     z-index: 0;
 }
@@ -293,7 +304,8 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1;
 }
 
 .hero-content {
@@ -301,7 +313,7 @@ body {
     z-index: 2;
     max-width: 550px;
     animation: fadeInUp 1s ease;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.3);
     margin-left: 5%;
     margin-top: 0;
     width: 100%;
@@ -313,7 +325,7 @@ body {
     font-weight: 700;
     margin-bottom: 1.5rem;
     line-height: 1.3;
-    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8);
+    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 0, 0, 0.5);
     position: relative;
     z-index: 3;
     letter-spacing: -0.5px;
@@ -322,8 +334,8 @@ body {
 .hero-subtitle {
     font-size: 1.3rem;
     margin-bottom: 2.5rem;
-    opacity: 0.95;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    opacity: 0.98;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.4);
     position: relative;
     z-index: 3;
     line-height: 1.6;
@@ -763,25 +775,10 @@ section {
     text-align: center;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.pricing-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-}
-
-.pricing-card:hover::after {
-    transform: scaleX(1);
-}
 
 .pricing-card:hover {
     transform: translateY(-10px) scale(1.02);
@@ -797,39 +794,57 @@ section {
     background: linear-gradient(135deg, #ffffff 0%, #f8fff9 100%);
 }
 
-.pricing-card.featured::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(46, 204, 113, 0.1) 0%, transparent 70%);
-    animation: pulse 3s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 0.8; }
-}
-
 .popular-badge {
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--primary-color);
+    position: relative;
+    top: -0.5rem;
+    left: 0;
+    transform: none;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     color: white;
-    padding: 0.5rem 1.5rem;
+    padding: 0.4rem 1.5rem;
     border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4), 0 2px 8px rgba(46, 204, 113, 0.3);
+    z-index: 10;
+    white-space: nowrap;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    animation: pulse-badge 2s ease-in-out infinite;
+    display: inline-block;
+    margin: 0 auto 1rem auto;
+    width: fit-content;
+}
+
+@keyframes pulse-badge {
+    0%, 100% {
+        box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4), 0 2px 8px rgba(46, 204, 113, 0.3);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 6px 20px rgba(46, 204, 113, 0.5), 0 4px 12px rgba(46, 204, 113, 0.4);
+        transform: scale(1.02);
+    }
+}
+
+.pricing-header {
+    position: relative;
+    margin-bottom: 1rem;
 }
 
 .pricing-header h3 {
-    font-size: 1.8rem;
+    font-size: 2.2rem;
+    font-weight: 800;
     color: var(--text-dark);
     margin-bottom: 1.5rem;
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .price {
@@ -921,6 +936,45 @@ section {
     color: var(--text-light);
     font-size: 0.9rem;
     font-style: italic;
+}
+
+/* Ensure buttons in pricing cards are visible */
+.pricing-card .btn {
+    margin-top: 1rem;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    display: block;
+}
+
+.pricing-card .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 4px 20px rgba(46, 204, 113, 0.3), 0 2px 8px rgba(46, 204, 113, 0.2);
+}
+
+.pricing-card .btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+    color: white;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 35px rgba(46, 204, 113, 0.4), 0 6px 16px rgba(46, 204, 113, 0.3);
+}
+
+.pricing-card .btn-secondary {
+    background: var(--bg-light);
+    color: var(--text-dark);
+    border: 2px solid var(--bg-light);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 2.5rem;
+}
+
+.pricing-card .btn-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3), 0 4px 12px rgba(46, 204, 113, 0.2);
 }
 
 /* Calculator Section */
@@ -1507,6 +1561,105 @@ section {
     line-height: 1.8;
 }
 
+.map-container {
+    margin-top: 1.5rem;
+    width: calc(100% + 120px);
+    margin-left: -60px;
+    margin-right: -60px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 3px solid rgba(46, 204, 113, 0.2);
+    background: #ffffff;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+}
+
+.map-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 15px;
+    padding: 3px;
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.3), rgba(39, 174, 96, 0.3));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.map-container:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 15px 40px rgba(46, 204, 113, 0.2), 0 8px 20px rgba(0, 0, 0, 0.15);
+    border-color: rgba(46, 204, 113, 0.4);
+}
+
+.map-container iframe {
+    display: block;
+    width: 100%;
+    height: 360px;
+    border: none;
+    border-radius: 12px;
+    z-index: 1;
+    filter: brightness(1.02) contrast(1.05);
+    transition: filter 0.3s ease;
+}
+
+.map-container:hover iframe {
+    filter: brightness(1.05) contrast(1.08);
+}
+
+.map-link {
+    margin-top: 0.75rem;
+    text-align: center;
+}
+
+.map-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: color 0.3s ease;
+    display: inline-block;
+}
+
+.map-link a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+.info-text p .phone-link,
+.info-text p .email-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    background-color: rgba(46, 204, 113, 0.1);
+}
+
+.info-text p .phone-link:hover,
+.info-text p .phone-link:active,
+.info-text p .email-link:hover,
+.info-text p .email-link:active {
+    color: var(--primary-dark);
+    background-color: rgba(46, 204, 113, 0.2);
+    transform: scale(1.05);
+    text-decoration: underline;
+}
+
+.info-text p .phone-link:focus,
+.info-text p .email-link:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
 .contact-form {
     background: var(--bg-white);
     padding: 2.5rem;
@@ -1703,12 +1856,60 @@ button:disabled {
     }
 
     .hero {
-        justify-content: center;
+        justify-content: space-between;
         text-align: center;
         padding-left: 20px;
         padding-right: 20px;
-        background-image: url('hero-backgroundphone.png');
+        padding-top: 100px;
+        padding-bottom: 2rem;
+        background-image: url('truckmobile.png');
+        background-size: cover;
+        background-position: center center;
         background-attachment: scroll;
+        min-height: 100vh;
+        background-color: var(--primary-color);
+        flex-direction: column;
+    }
+    
+    .hero::before {
+        background: 
+            linear-gradient(135deg, rgba(46, 204, 113, 0.3) 0%, rgba(39, 174, 96, 0.3) 50%, rgba(34, 153, 84, 0.3) 100%);
+    }
+    
+    .hero-overlay {
+        background: rgba(0, 0, 0, 0.4);
+    }
+    
+    .hero-content {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: calc(100vh - 180px);
+        width: 100%;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+        margin-bottom: 0;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: auto;
+        margin-bottom: 0;
+        padding-top: 2rem;
+    }
+    
+    .hero-features {
+        display: none;
     }
 
     .hero-content {
@@ -1874,16 +2075,65 @@ button:disabled {
     .hero {
         padding-left: 12px;
         padding-right: 12px;
-        padding-top: 90px;
+        padding-top: 80px;
+        padding-bottom: 2rem;
+        background-image: url('truckmobile.png');
+        background-size: cover;
+        background-position: center center;
+        min-height: 100vh;
+        background-color: var(--primary-color);
+        justify-content: space-between;
+        flex-direction: column;
     }
-
+    
+    .hero::before {
+        background: 
+            linear-gradient(135deg, rgba(46, 204, 113, 0.35) 0%, rgba(39, 174, 96, 0.35) 50%, rgba(34, 153, 84, 0.35) 100%);
+    }
+    
+    .hero-overlay {
+        background: rgba(0, 0, 0, 0.45);
+    }
+    
+    .hero-content {
+        padding: 0;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: calc(100vh - 160px);
+        width: 100%;
+    }
+    
     .hero-title {
         font-size: 1.8rem;
         line-height: 1.2;
+        margin-bottom: 0.8rem;
+        margin-top: 1.5rem;
     }
-
+    
     .hero-subtitle {
         font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 0;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        gap: 0.8rem;
+        margin-top: auto;
+        margin-bottom: 0;
+        padding-top: 2rem;
+    }
+    
+    .btn {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        font-size: 0.95rem;
+    }
+    
+    .hero-features {
+        display: none;
     }
 
     .section-title {

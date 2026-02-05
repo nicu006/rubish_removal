@@ -3,6 +3,7 @@ const mysql = require('mysql2/promise');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const nodemailer = require('nodemailer');
 
 // Load environment variables from .env (preferred) or env.example (fallback)
 // This makes `npm start` work without manually exporting $env:... variables.
@@ -71,6 +72,228 @@ const dbConfig = {
 // Create connection pool
 let pool;
 
+// Email configuration
+const emailConfig = {
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.SMTP_PORT) || 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+        user: process.env.SMTP_USER || '',
+        pass: process.env.SMTP_PASS || ''
+    }
+};
+
+const contactEmail = process.env.CONTACT_EMAIL || 'softionyxgroup@gmail.com';
+
+// Create email transporter
+const transporter = nodemailer.createTransport(emailConfig);
+
+// Function to send email
+async function sendContactEmail(formData) {
+    const { name, email, phone, service, region, message } = formData;
+    
+    const serviceLabels = {
+        residential: 'Residential',
+        commercial: 'Commercial',
+        bulk: 'Bulk Removal',
+        recycling: 'Recycling'
+    };
+    
+    const serviceIcons = {
+        residential: '🏠',
+        commercial: '🏢',
+        bulk: '📦',
+        recycling: '♻️'
+    };
+    
+    const formattedDate = new Date().toLocaleString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    // Escape HTML to prevent XSS
+    const escapeHtml = (text) => {
+        if (!text) return '';
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    };
+    
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safePhone = phone ? escapeHtml(phone) : '';
+    const safeService = serviceLabels[service] || service;
+    const safeMessage = message.replace(/\n/g, '<br>').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    
+    const emailHtml = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Contact Form Submission</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f7fa; line-height: 1.6;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f5f7fa; padding: 20px 0;">
+        <tr>
+            <td align="center">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); padding: 30px 40px; text-align: center;">
+                            <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">
+                                🗑️ EcoClean
+                            </h1>
+                            <p style="margin: 8px 0 0 0; color: #ffffff; font-size: 16px; opacity: 0.95;">
+                                New Contact Form Submission
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 40px;">
+                            <!-- Date Badge -->
+                            <div style="background-color: #ecf0f1; border-radius: 8px; padding: 12px 16px; margin-bottom: 30px; text-align: center;">
+                                <p style="margin: 0; color: #7f8c8d; font-size: 14px; font-weight: 500;">
+                                    📅 ${formattedDate}
+                                </p>
+                            </div>
+                            
+                            <!-- Service Card -->
+                            <div style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); border-radius: 10px; padding: 20px; margin-bottom: 30px; text-align: center;">
+                                <div style="font-size: 48px; margin-bottom: 10px;">
+                                    ${serviceIcons[service] || '📋'}
+                                </div>
+                                <h2 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 600;">
+                                    ${safeService}
+                                </h2>
+                            </div>
+                            
+                            <!-- Contact Information -->
+                            <div style="background-color: #f8f9fa; border-radius: 10px; padding: 25px; margin-bottom: 25px;">
+                                <h3 style="margin: 0 0 20px 0; color: #2c3e50; font-size: 18px; font-weight: 600; border-bottom: 2px solid #27ae60; padding-bottom: 10px;">
+                                    👤 Contact Information
+                                </h3>
+                                
+                                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                    <tr>
+                                        <td style="padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                            <strong style="color: #34495e; font-size: 14px; display: inline-block; width: 100px;">Name:</strong>
+                                            <span style="color: #2c3e50; font-size: 15px; font-weight: 500;">${safeName}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                            <strong style="color: #34495e; font-size: 14px; display: inline-block; width: 100px;">Email:</strong>
+                                            <a href="mailto:${safeEmail}" style="color: #27ae60; font-size: 15px; text-decoration: none; font-weight: 500;">${safeEmail}</a>
+                                        </td>
+                                    </tr>
+                                    ${safePhone ? `
+                                    <tr>
+                                        <td style="padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                            <strong style="color: #34495e; font-size: 14px; display: inline-block; width: 100px;">Phone:</strong>
+                                            <a href="tel:${safePhone}" style="color: #27ae60; font-size: 15px; text-decoration: none; font-weight: 500;">${safePhone}</a>
+                                        </td>
+                                    </tr>
+                                    ` : ''}
+                                    <tr>
+                                        <td style="padding: 12px 0;">
+                                            <strong style="color: #34495e; font-size: 14px; display: inline-block; width: 100px;">Region:</strong>
+                                            <span style="color: #2c3e50; font-size: 15px; font-weight: 500;">${escapeHtml(region || 'Not specified')}</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <!-- Message -->
+                            <div style="background-color: #ffffff; border: 2px solid #e9ecef; border-radius: 10px; padding: 25px;">
+                                <h3 style="margin: 0 0 15px 0; color: #2c3e50; font-size: 18px; font-weight: 600; border-bottom: 2px solid #27ae60; padding-bottom: 10px;">
+                                    💬 Message
+                                </h3>
+                                <div style="color: #34495e; font-size: 15px; line-height: 1.8; white-space: pre-wrap;">
+                                    ${safeMessage}
+                                </div>
+                            </div>
+                            
+                            <!-- Action Button -->
+                            <div style="text-align: center; margin-top: 30px;">
+                                <a href="mailto:${safeEmail}?subject=Re: ${safeService} Inquiry" style="display: inline-block; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);">
+                                    ✉️ Reply to ${safeName}
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #2c3e50; padding: 25px 40px; text-align: center;">
+                            <p style="margin: 0; color: #bdc3c7; font-size: 13px;">
+                                This email was sent from the EcoClean website contact form.
+                            </p>
+                            <p style="margin: 10px 0 0 0; color: #95a5a6; font-size: 12px;">
+                                © ${new Date().getFullYear()} EcoClean. All rights reserved.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+    `;
+    
+    const emailText = `
+═══════════════════════════════════════════════════════
+    🗑️ EcoClean - New Contact Form Submission
+═══════════════════════════════════════════════════════
+
+📅 Date: ${formattedDate}
+
+${serviceIcons[service] || '📋'} Service: ${safeService}
+
+👤 Contact Information:
+   Name: ${name}
+   Email: ${email}
+   ${phone ? `Phone: ${phone}` : ''}
+   Region: ${region || 'Not specified'}
+
+💬 Message:
+${message}
+
+═══════════════════════════════════════════════════════
+Reply to: ${email}
+═══════════════════════════════════════════════════════
+    `;
+    
+    const mailOptions = {
+        from: `"EcoClean Website" <${emailConfig.auth.user}>`,
+        to: contactEmail,
+        replyTo: email,
+        subject: `🗑️ New Inquiry: ${safeService} - ${safeName}`,
+        text: emailText,
+        html: emailHtml
+    };
+    
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('✅ Email sent successfully:', info.messageId);
+        return { success: true, messageId: info.messageId };
+    } catch (error) {
+        console.error('❌ Error sending email:', error);
+        throw error;
+    }
+}
+
+// Database functions
 async function initDatabase() {
     try {
         // Helpful early error if password is required but missing
@@ -106,25 +329,45 @@ async function initDatabase() {
 }
 
 async function createTable() {
-    const createTableSQL = `
-        CREATE TABLE IF NOT EXISTS messages (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            timestamp BIGINT NOT NULL,
-            name VARCHAR(100) NOT NULL,
-            email VARCHAR(254) NOT NULL,
-            phone VARCHAR(20),
-            service VARCHAR(50) NOT NULL,
-            message TEXT NOT NULL,
-            read_status BOOLEAN DEFAULT FALSE,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            INDEX idx_timestamp (timestamp DESC),
-            INDEX idx_read_status (read_status),
-            INDEX idx_email (email)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    `;
-
+    // First, check if table exists and if region column exists
     try {
+        const [columns] = await pool.query(`
+            SELECT COLUMN_NAME 
+            FROM INFORMATION_SCHEMA.COLUMNS 
+            WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'messages' AND COLUMN_NAME = 'region'
+        `, [dbConfig.database]);
+        
+        const createTableSQL = `
+            CREATE TABLE IF NOT EXISTS messages (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                timestamp BIGINT NOT NULL,
+                name VARCHAR(100) NOT NULL,
+                email VARCHAR(254) NOT NULL,
+                phone VARCHAR(20),
+                service VARCHAR(50) NOT NULL,
+                region VARCHAR(20),
+                message TEXT NOT NULL,
+                read_status BOOLEAN DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_timestamp (timestamp DESC),
+                INDEX idx_read_status (read_status),
+                INDEX idx_email (email),
+                INDEX idx_region (region)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        `;
+        
         await pool.query(createTableSQL);
+        
+        // Add region column if it doesn't exist
+        if (columns.length === 0) {
+            await pool.query(`
+                ALTER TABLE messages 
+                ADD COLUMN region VARCHAR(20) AFTER service,
+                ADD INDEX idx_region (region)
+            `);
+            console.log('✅ Added region column to messages table');
+        }
+        
         console.log('✅ Table created/verified successfully');
     } catch (error) {
         console.error('❌ Error creating table:', error.message);
@@ -150,6 +393,7 @@ app.get('/api/messages', async (req, res) => {
                 email: row.email,
                 phone: row.phone,
                 service: row.service,
+                region: row.region || null,
                 message: row.message
             },
             read: row.read_status || false
@@ -162,7 +406,7 @@ app.get('/api/messages', async (req, res) => {
     }
 });
 
-// POST new message
+// POST new message - saves to database AND sends email
 app.post('/api/messages', async (req, res) => {
     try {
         const { timestamp, data } = req.body;
@@ -173,17 +417,28 @@ app.post('/api/messages', async (req, res) => {
         }
 
         // Sanitize input
-        const name = data.name.substring(0, 100);
-        const email = data.email.substring(0, 254);
-        const phone = data.phone ? data.phone.substring(0, 20) : null;
-        const service = data.service.substring(0, 50);
-        const message = data.message.substring(0, 2000);
+        const formData = {
+            name: data.name.substring(0, 100),
+            email: data.email.substring(0, 254),
+            phone: data.phone ? data.phone.substring(0, 20) : null,
+            service: data.service.substring(0, 50),
+            region: data.region ? data.region.substring(0, 20) : null,
+            message: data.message.substring(0, 2000)
+        };
 
+        // Save to database
         const [result] = await pool.query(
-            `INSERT INTO messages (timestamp, name, email, phone, service, message, read_status)
-             VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [timestamp, name, email, phone, service, message, false]
+            `INSERT INTO messages (timestamp, name, email, phone, service, region, message, read_status)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [timestamp, formData.name, formData.email, formData.phone, formData.service, formData.region, formData.message, false]
         );
+
+        // Send email (don't fail if email fails, just log it)
+        try {
+            await sendContactEmail(formData);
+        } catch (emailError) {
+            console.error('⚠️ Email sending failed, but message saved to database:', emailError.message);
+        }
 
         res.status(201).json({
             id: result.insertId,
@@ -191,7 +446,10 @@ app.post('/api/messages', async (req, res) => {
         });
     } catch (error) {
         console.error('Error saving message:', error);
-        res.status(500).json({ error: 'Failed to save message' });
+        res.status(500).json({ 
+            error: 'Failed to save message',
+            details: error.message 
+        });
     }
 });
 
@@ -241,6 +499,11 @@ app.get('/api/health', async (req, res) => {
     }
 });
 
+// Serve index.html explicitly for root route
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
+
 // Serve frontend files from public folder (AFTER all API routes)
 // This allows mobile devices to access everything from the same origin (no CORS issues)
 app.use(express.static(path.join(__dirname, '..', 'public')));
@@ -255,7 +518,15 @@ app.get('*', (req, res, next) => {
 
 // Start server
 async function startServer() {
+    // Initialize database
     await initDatabase();
+
+    // Verify email configuration
+    if (!emailConfig.auth.user || !emailConfig.auth.pass) {
+        console.warn('⚠️ Email configuration missing. Please set SMTP_USER and SMTP_PASS in .env file');
+    } else {
+        console.log('✅ Email configuration loaded');
+    }
 
     app.listen(PORT, '0.0.0.0', () => {
         const os = require('os');
@@ -277,10 +548,10 @@ async function startServer() {
         console.log(`🚀 Server running on http://localhost:${PORT}`);
         console.log(`🌐 Server accessible from network: http://${localIP}:${PORT}`);
         console.log(`📊 API endpoints available at http://localhost:${PORT}/api`);
-        console.log(`📱 For mobile access, use: http://${localIP}:${PORT}/api`);
+        console.log(`📧 Email configured: ${contactEmail}`);
         console.log(`\nAvailable endpoints:`);
         console.log(`  GET    /api/messages     - Get all messages`);
-        console.log(`  POST   /api/messages     - Create new message`);
+        console.log(`  POST   /api/messages     - Create new message (saves to DB + sends email)`);
         console.log(`  PATCH  /api/messages/:id - Update message read status`);
         console.log(`  DELETE /api/messages/:id - Delete message`);
         console.log(`  GET    /api/health       - Health check\n`);

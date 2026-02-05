@@ -104,11 +104,24 @@ function validateFormData(formData) {
         errors.push({ field: 'email', message: 'Email is too long' });
     }
     
-    // Phone validation
+    // Phone validation for Irish numbers
     if (formData.phone) {
-        const phoneRegex = /^[\d\s\-\+\(\)]+$/;
-        if (!phoneRegex.test(formData.phone) || formData.phone.length > 20) {
-            errors.push({ field: 'phone', message: 'Invalid phone number format' });
+        // Remove spaces, dashes, and parentheses for validation
+        const cleanPhone = formData.phone.replace(/[\s\-\(\)]/g, '');
+        
+        // Irish phone number patterns:
+        // Mobile: 08X, 085, 086, 087, 088, 089 (9 digits after 0)
+        // Landline: 01, 021-099 (varies, typically 7-9 digits after 0)
+        // International: +353 or 00353 followed by number without leading 0
+        
+        const irishPhoneRegex = /^(\+353|00353|0)?[1-9]\d{7,9}$/;
+        
+        if (cleanPhone.length < 8 || cleanPhone.length > 15) {
+            errors.push({ field: 'phone', message: 'Phone number must be between 8 and 15 digits' });
+        } else if (!irishPhoneRegex.test(cleanPhone)) {
+            errors.push({ field: 'phone', message: 'Please enter a valid Irish phone number' });
+        } else if (formData.phone.length > 20) {
+            errors.push({ field: 'phone', message: 'Phone number is too long (max 20 characters)' });
         }
     }
     
@@ -116,6 +129,11 @@ function validateFormData(formData) {
     const allowedServices = ['residential', 'commercial', 'bulk', 'recycling'];
     if (!formData.service || !allowedServices.includes(formData.service)) {
         errors.push({ field: 'service', message: 'Please select a valid service' });
+    }
+    
+    // Region validation
+    if (!formData.region || formData.region.trim() === '') {
+        errors.push({ field: 'region', message: 'Please select a Dublin region' });
     }
     
     // Message validation
@@ -176,11 +194,19 @@ if (contactForm) {
         const emailInput = document.getElementById('email');
         const phoneInput = document.getElementById('phone');
         const serviceInput = document.getElementById('service');
+        const regionInput = document.getElementById('region');
         const messageInput = document.getElementById('message');
         
         // Remove previous error classes
-        [nameInput, emailInput, phoneInput, serviceInput, messageInput].forEach(input => {
-            if (input) input.classList.remove('error');
+        [nameInput, emailInput, phoneInput, serviceInput, regionInput, messageInput].forEach(input => {
+            if (input) {
+                input.classList.remove('error', 'valid');
+                // Also remove from phone wrapper if it exists
+                if (input.id === 'phone') {
+                    const wrapper = input.closest('.phone-input-wrapper');
+                    if (wrapper) wrapper.classList.remove('error', 'valid');
+                }
+            }
         });
         
         // Check rate limiting
@@ -191,11 +217,21 @@ if (contactForm) {
         }
         
         // Sanitize all inputs
+        // For phone, add +353 prefix if phone number is provided
+        let phoneValue = phoneInput.value ? sanitizeInput(phoneInput.value.trim()) : '';
+        if (phoneValue) {
+            // Remove any existing +353, 00353, or leading 0, then add +353
+            phoneValue = phoneValue.replace(/^(\+353|00353|\+353\s*)/i, '').replace(/^0/, '');
+            // Add +353 prefix
+            phoneValue = '+353 ' + phoneValue;
+        }
+        
         const formData = {
             name: sanitizeInput(nameInput.value),
             email: sanitizeInput(emailInput.value),
-            phone: phoneInput.value ? sanitizeInput(phoneInput.value) : '',
+            phone: phoneValue,
             service: serviceInput.value,
+            region: regionInput.value,
             message: sanitizeInput(messageInput.value)
         };
         
@@ -213,6 +249,7 @@ if (contactForm) {
                     'email': emailInput,
                     'phone': phoneInput,
                     'service': serviceInput,
+                    'region': regionInput,
                     'message': messageInput
                 };
                 if (fieldMap[error.field]) {
@@ -241,6 +278,50 @@ if (contactForm) {
             
             // Reset form
             contactForm.reset();
+            
+            // Reset all validation states - force complete reset
+            [nameInput, emailInput, phoneInput, serviceInput, regionInput, messageInput].forEach(input => {
+                if (input) {
+                    // Remove all validation classes
+                    input.classList.remove('error', 'valid');
+                    // Remove any inline styles that might affect border
+                    input.style.borderColor = '';
+                    input.style.boxShadow = '';
+                    
+                    // Also remove from phone wrapper if it exists
+                    if (input.id === 'phone') {
+                        const wrapper = input.closest('.phone-input-wrapper');
+                        if (wrapper) {
+                            wrapper.classList.remove('error', 'valid');
+                            wrapper.style.borderColor = '';
+                            wrapper.style.boxShadow = '';
+                        }
+                    }
+                }
+            });
+            
+            // Reset validation messages - force complete reset
+            const emailValidationMessage = document.getElementById('emailValidationMessage');
+            const phoneValidationMessage = document.getElementById('phoneValidationMessage');
+            if (emailValidationMessage) {
+                emailValidationMessage.textContent = '';
+                emailValidationMessage.className = 'email-validation-message';
+                emailValidationMessage.classList.remove('error', 'success');
+                emailValidationMessage.style.display = 'none';
+            }
+            if (phoneValidationMessage) {
+                phoneValidationMessage.textContent = '';
+                phoneValidationMessage.className = 'phone-validation-message';
+                phoneValidationMessage.classList.remove('error', 'success');
+                phoneValidationMessage.style.display = 'none';
+            }
+            
+            // Reset message counter
+            const messageCount = document.getElementById('messageCount');
+            if (messageCount) {
+                messageCount.textContent = '0 / 2000 characters';
+                messageCount.style.color = 'var(--text-light)';
+            }
             
             // Disable submit button temporarily
             const submitButton = contactForm.querySelector('button[type="submit"]');
@@ -536,6 +617,245 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize calculator and FAQ
     initCalculator();
     initFAQ();
+    
+    // Live email validation
+    const emailInput = document.getElementById('email');
+    const emailValidationMessage = document.getElementById('emailValidationMessage');
+    if (emailInput && emailValidationMessage) {
+        let emailValidationTimeout;
+        
+        emailInput.addEventListener('input', () => {
+            clearTimeout(emailValidationTimeout);
+            const email = emailInput.value.trim();
+            
+            // Don't validate if empty (let required attribute handle it)
+            if (email === '') {
+                emailInput.classList.remove('valid', 'error');
+                emailValidationMessage.textContent = '';
+                emailValidationMessage.className = 'email-validation-message';
+                emailValidationMessage.style.display = 'none';
+                return;
+            }
+            
+            // Show message element when there's content
+            emailValidationMessage.style.display = 'block';
+            
+            // Debounce validation for better UX
+            emailValidationTimeout = setTimeout(() => {
+                validateEmailLive(email);
+            }, 300);
+        });
+        
+        emailInput.addEventListener('blur', () => {
+            clearTimeout(emailValidationTimeout);
+            const email = emailInput.value.trim();
+            if (email !== '') {
+                validateEmailLive(email);
+            }
+        });
+    }
+    
+    // Function to validate email in real-time
+    function validateEmailLive(email) {
+        const emailInput = document.getElementById('email');
+        const emailValidationMessage = document.getElementById('emailValidationMessage');
+        
+        if (!emailInput || !emailValidationMessage) return;
+        
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        
+        // Remove previous classes
+        emailInput.classList.remove('valid', 'error');
+        emailValidationMessage.className = 'email-validation-message';
+        
+        if (email.length === 0) {
+            emailValidationMessage.textContent = '';
+            emailValidationMessage.style.display = 'none';
+            return;
+        }
+        
+        // Show message element when there's content
+        emailValidationMessage.style.display = 'block';
+        
+        if (email.length > 254) {
+            emailInput.classList.add('error');
+            emailValidationMessage.textContent = 'Email is too long (max 254 characters)';
+            emailValidationMessage.classList.add('error');
+            return;
+        }
+        
+        if (!emailRegex.test(email)) {
+            emailInput.classList.add('error');
+            emailValidationMessage.textContent = 'Please enter a valid email address';
+            emailValidationMessage.classList.add('error');
+            return;
+        }
+        
+        // Valid email
+        emailInput.classList.add('valid');
+        emailValidationMessage.textContent = '✓ Valid email address';
+        emailValidationMessage.classList.add('success');
+    }
+    
+    // Live phone validation for Irish numbers
+    const phoneInput = document.getElementById('phone');
+    const phoneValidationMessage = document.getElementById('phoneValidationMessage');
+    const phoneWrapper = phoneInput ? phoneInput.closest('.phone-input-wrapper') : null;
+    
+    if (phoneInput && phoneValidationMessage) {
+        let phoneValidationTimeout;
+        
+        // Restrict input to only digits and spaces
+        phoneInput.addEventListener('keypress', (e) => {
+            // Allow: backspace, delete, tab, escape, enter, and arrow keys
+            if ([8, 9, 27, 13, 46, 37, 38, 39, 40].indexOf(e.keyCode) !== -1 ||
+                // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                (e.keyCode === 65 && e.ctrlKey === true) ||
+                (e.keyCode === 67 && e.ctrlKey === true) ||
+                (e.keyCode === 86 && e.ctrlKey === true) ||
+                (e.keyCode === 88 && e.ctrlKey === true)) {
+                return;
+            }
+            // Ensure that it is a number or space and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105) && e.keyCode !== 32) {
+                e.preventDefault();
+            }
+        });
+        
+        // Also filter on paste
+        phoneInput.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const paste = (e.clipboardData || window.clipboardData).getData('text');
+            // Only allow digits and spaces
+            const filtered = paste.replace(/[^0-9\s]/g, '');
+            // Limit to max 13 characters (10 digits + 3 spaces)
+            const limited = filtered.substring(0, 13);
+            phoneInput.value = limited;
+            // Trigger validation
+            phoneInput.dispatchEvent(new Event('input'));
+        });
+        
+        // Format phone number as user types (add spaces for readability)
+        phoneInput.addEventListener('input', (e) => {
+            let value = phoneInput.value;
+            
+            // Remove all non-digit characters
+            value = value.replace(/[^0-9]/g, '');
+            
+            // Limit to 10 digits (Irish phone numbers)
+            if (value.length > 10) {
+                value = value.substring(0, 10);
+            }
+            
+            // Format with spaces: XX XXX XXXX or 0XX XXX XXXX
+            let formatted = '';
+            if (value.length > 0) {
+                if (value.startsWith('0') && value.length > 3) {
+                    // Format: 0XX XXX XXXX
+                    formatted = value.substring(0, 3) + ' ' + value.substring(3, 6) + ' ' + value.substring(6);
+                } else if (value.length > 3) {
+                    // Format: XX XXX XXXX
+                    formatted = value.substring(0, 2) + ' ' + value.substring(2, 5) + ' ' + value.substring(5);
+                } else if (value.length > 2) {
+                    formatted = value.substring(0, 2) + ' ' + value.substring(2);
+                } else {
+                    formatted = value;
+                }
+            }
+            
+            // Update value
+            phoneInput.value = formatted;
+            
+            clearTimeout(phoneValidationTimeout);
+            const phone = phoneInput.value.trim();
+            
+            // Don't validate if empty (phone is optional)
+            if (phone === '') {
+                if (phoneWrapper) phoneWrapper.classList.remove('valid', 'error');
+                phoneInput.classList.remove('valid', 'error');
+                phoneValidationMessage.textContent = '';
+                phoneValidationMessage.className = 'phone-validation-message';
+                phoneValidationMessage.style.display = 'none';
+                return;
+            }
+            
+            // Show message element when there's content
+            phoneValidationMessage.style.display = 'block';
+            
+            // Debounce validation for better UX
+            phoneValidationTimeout = setTimeout(() => {
+                validatePhoneLive(phone);
+            }, 300);
+        });
+        
+        phoneInput.addEventListener('blur', () => {
+            clearTimeout(phoneValidationTimeout);
+            const phone = phoneInput.value.trim();
+            if (phone !== '') {
+                validatePhoneLive(phone);
+            }
+        });
+    }
+    
+    // Function to validate Irish phone number in real-time
+    function validatePhoneLive(phone) {
+        const phoneInput = document.getElementById('phone');
+        const phoneValidationMessage = document.getElementById('phoneValidationMessage');
+        const phoneWrapper = phoneInput ? phoneInput.closest('.phone-input-wrapper') : null;
+        
+        if (!phoneInput || !phoneValidationMessage) return;
+        
+        // Remove spaces, dashes, and parentheses for validation
+        const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+        
+        // Irish phone number patterns (without +353 prefix since it's shown separately)
+        // User enters just the number starting with 0 or without 0
+        const irishPhoneRegex = /^0?[1-9]\d{7,9}$/;
+        
+        // Remove previous classes
+        if (phoneWrapper) phoneWrapper.classList.remove('valid', 'error');
+        phoneInput.classList.remove('valid', 'error');
+        phoneValidationMessage.className = 'phone-validation-message';
+        
+        if (phone.length === 0) {
+            phoneValidationMessage.textContent = '';
+            phoneValidationMessage.style.display = 'none';
+            return;
+        }
+        
+        // Show message element when there's content
+        phoneValidationMessage.style.display = 'block';
+        
+        if (phone.length > 15) {
+            if (phoneWrapper) phoneWrapper.classList.add('error');
+            phoneInput.classList.add('error');
+            phoneValidationMessage.textContent = 'Phone number is too long';
+            phoneValidationMessage.classList.add('error');
+            return;
+        }
+        
+        if (cleanPhone.length < 8 || cleanPhone.length > 10) {
+            if (phoneWrapper) phoneWrapper.classList.add('error');
+            phoneInput.classList.add('error');
+            phoneValidationMessage.textContent = 'Phone number must be 8-10 digits (e.g., 85 123 4567)';
+            phoneValidationMessage.classList.add('error');
+            return;
+        }
+        
+        if (!irishPhoneRegex.test(cleanPhone)) {
+            if (phoneWrapper) phoneWrapper.classList.add('error');
+            phoneInput.classList.add('error');
+            phoneValidationMessage.textContent = 'Please enter a valid Irish phone number (e.g., 85 123 4567)';
+            phoneValidationMessage.classList.add('error');
+            return;
+        }
+        
+        // Valid phone
+        if (phoneWrapper) phoneWrapper.classList.add('valid');
+        phoneInput.classList.add('valid');
+        phoneValidationMessage.textContent = '✓ Valid Irish phone number';
+        phoneValidationMessage.classList.add('success');
+    }
     
     // Character counter for message field
     const messageInput = document.getElementById('message');
@@ -975,6 +1295,86 @@ style.textContent = `
         border-color: var(--accent-color);
         box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.15);
         animation: shake 0.3s ease;
+    }
+    .form-group input.valid {
+        border-color: #27ae60;
+        box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.15);
+    }
+    .email-validation-message,
+    .phone-validation-message {
+        display: none;
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+        min-height: 0;
+        height: auto;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    .email-validation-message:not(:empty),
+    .phone-validation-message:not(:empty) {
+        display: block;
+    }
+    .email-validation-message.error,
+    .phone-validation-message.error {
+        color: var(--accent-color);
+    }
+    .email-validation-message.success,
+    .phone-validation-message.success {
+        color: #27ae60;
+        font-weight: 500;
+    }
+    .phone-input-wrapper {
+        display: flex;
+        align-items: stretch;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        background-color: #ffffff;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        margin: 0;
+    }
+    .phone-input-wrapper:focus-within {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.15);
+    }
+    .phone-input-wrapper.error {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.15);
+    }
+    .phone-input-wrapper.valid {
+        border-color: #27ae60;
+        box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.15);
+    }
+    .phone-prefix {
+        display: flex;
+        align-items: center;
+        padding: 0.875rem 1rem;
+        background-color: #f8f9fa;
+        color: var(--text-dark);
+        font-weight: 600;
+        border-right: 2px solid #e9ecef;
+        border-radius: 8px 0 0 8px;
+        white-space: nowrap;
+        font-size: 1rem;
+        margin: 0;
+        line-height: 1.5;
+    }
+    .phone-input-wrapper input {
+        flex: 1;
+        border: none;
+        outline: none;
+        padding: 0.875rem 1rem;
+        margin: 0;
+        font-size: 1rem;
+        background: transparent;
+        min-width: 0;
+        border-radius: 0 8px 8px 0;
+    }
+    .phone-input-wrapper input:focus {
+        box-shadow: none;
+    }
+    .phone-input-wrapper input::placeholder {
+        color: #adb5bd;
     }
     @keyframes shake {
         0%, 100% { transform: translateX(0); }
