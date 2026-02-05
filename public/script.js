@@ -239,23 +239,29 @@ if (contactForm) {
         const validationErrors = validateFormData(formData);
         
         if (validationErrors.length > 0) {
-            // Show first error
-            showNotification(validationErrors[0].message, 'error');
-            
-            // Highlight error fields
+            const firstError = validationErrors[0];
+            showNotification(firstError.message, 'error');
+            const fieldMap = {
+                'name': nameInput,
+                'email': emailInput,
+                'phone': phoneInput,
+                'service': serviceInput,
+                'region': regionInput,
+                'message': messageInput
+            };
             validationErrors.forEach(error => {
-                const fieldMap = {
-                    'name': nameInput,
-                    'email': emailInput,
-                    'phone': phoneInput,
-                    'service': serviceInput,
-                    'region': regionInput,
-                    'message': messageInput
-                };
                 if (fieldMap[error.field]) {
                     fieldMap[error.field].classList.add('error');
                 }
             });
+            var firstEl = fieldMap[firstError.field];
+            if (firstEl) {
+                firstEl.focus({ preventScroll: false });
+                var liveRegion = document.getElementById('form-error-announcer');
+                if (liveRegion) {
+                    liveRegion.textContent = firstError.message;
+                }
+            }
             return;
         }
         
@@ -271,6 +277,14 @@ if (contactForm) {
             read: false
         };
         
+        var submitButton = contactForm.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending…';
+        }
+        var formLiveRegion = document.getElementById('form-error-announcer');
+        if (formLiveRegion) formLiveRegion.textContent = '';
+
         // Save to backend API
         saveMessageToBackend(messageData).then(() => {
             // Show success message
@@ -323,48 +337,51 @@ if (contactForm) {
                 messageCount.style.color = 'var(--text-light)';
             }
             
-            // Disable submit button temporarily
-            const submitButton = contactForm.querySelector('button[type="submit"]');
             if (submitButton) {
-                submitButton.disabled = true;
-                setTimeout(() => {
+                submitButton.textContent = 'Send Message';
+                setTimeout(function () {
                     submitButton.disabled = false;
                 }, MIN_SUBMISSION_INTERVAL);
             }
-        }).catch(error => {
+            var formLiveRegion = document.getElementById('form-error-announcer');
+            if (formLiveRegion) formLiveRegion.textContent = '';
+        }).catch(function (error) {
             console.error('Error saving message:', error);
-            
-            // Show detailed error message
-            let errorMessage = 'Error saving message. ';
-            if (error.message) {
-                errorMessage += error.message + '. ';
+            if (submitButton) {
+                submitButton.textContent = 'Send Message';
+                submitButton.disabled = false;
             }
-            
-            showNotification(errorMessage, 'error');
+            var msg = 'We couldn’t send your message. Please check your connection and try again.';
+            if (error.message && (error.message.includes('timeout') || error.message.includes('Too many'))) {
+                msg = error.message;
+            }
+            showNotification(msg, 'error');
         });
         
         return; // Exit early since we handle success/error in promise
     });
 }
 
-// Notification system
+// Notification system (safe: no innerHTML with user content to avoid XSS)
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
-    
-    // Handle multi-line messages
+
     if (message.includes('\n')) {
         const lines = message.split('\n');
-        notification.innerHTML = lines.map(line => {
-            if (line.trim().startsWith('✅') || line.trim().startsWith('❌') || line.trim().startsWith('⚠️')) {
-                return `<div style="font-weight: bold; margin-bottom: 0.3rem;">${line}</div>`;
+        lines.forEach((line) => {
+            const div = document.createElement('div');
+            div.style.marginBottom = '0.3rem';
+            if (/^[\s]*[✅❌⚠️]/.test(line.trim())) {
+                div.style.fontWeight = 'bold';
             }
-            return `<div>${line}</div>`;
-        }).join('');
+            div.textContent = line;
+            notification.appendChild(div);
+        });
     } else {
         notification.textContent = message;
     }
-    
+
     notification.setAttribute('role', 'alert');
     notification.setAttribute('aria-live', 'polite');
     document.body.appendChild(notification);
@@ -562,6 +579,9 @@ const observer = new IntersectionObserver((entries) => {
 
 // Observe service cards, feature cards, sections, and stat numbers
 document.addEventListener('DOMContentLoaded', () => {
+    var footerYear = document.getElementById('footer-year');
+    if (footerYear) footerYear.textContent = new Date().getFullYear();
+
     const animatedElements = document.querySelectorAll('.service-card, .feature-card, .pricing-card, section');
     const statNumbers = document.querySelectorAll('.stat-number');
     
@@ -1113,24 +1133,25 @@ async function saveMessageToBackend(messageData) {
     }
 }
 
-// Get all messages from backend API
+// Get all messages from backend API (supports pagination response: { messages, pagination })
 async function getAllMessagesFromDatabase() {
     try {
-        const response = await fetch(`${API_BASE_URL}/messages`, {
+        const url = API_BASE_URL.startsWith('/')
+            ? `${window.location.origin}${API_BASE_URL}/messages`
+            : `${API_BASE_URL}/messages`;
+        const response = await fetch(url, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            headers: { 'Content-Type': 'application/json' }
         });
-        
+
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Failed to fetch messages');
+            const errBody = await response.json().catch(() => ({}));
+            throw new Error(errBody.error || 'Failed to fetch messages');
         }
-        
-        const messages = await response.json();
+
+        const data = await response.json();
         backendAvailable = true;
-        return messages;
+        return data.messages !== undefined ? data.messages : data;
     } catch (error) {
         console.error('Error reading from backend:', error);
         backendAvailable = false;

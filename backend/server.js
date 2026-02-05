@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
+const rateLimit = require('express-rate-limit');
 
 // Load environment variables from .env (preferred) or env.example (fallback)
 // This makes `npm start` work without manually exporting $env:... variables.
@@ -20,10 +21,15 @@ try {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
-// Enhanced CORS configuration for mobile access
+// Allowed service values (strict validation)
+const ALLOWED_SERVICES = ['residential', 'commercial', 'bulk', 'recycling'];
+
+// CORS: use CORS_ORIGIN in production (e.g. https://yourdomain.com), '*' for development
+const corsOrigin = process.env.CORS_ORIGIN;
 const corsOptions = {
-    origin: '*', // Allow all origins (for development)
+    origin: corsOrigin === undefined || corsOrigin === ''
+        ? '*'
+        : corsOrigin.split(',').map(s => s.trim()).filter(Boolean),
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
     exposedHeaders: ['Content-Length', 'Content-Type'],
@@ -35,7 +41,12 @@ app.use(cors(corsOptions));
 
 // Handle preflight requests explicitly
 app.options('*', (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
+    const allowOrigin = corsOptions.origin === '*'
+        ? '*'
+        : (Array.isArray(corsOptions.origin) && req.headers.origin && corsOptions.origin.includes(req.headers.origin))
+            ? req.headers.origin
+            : (Array.isArray(corsOptions.origin) ? corsOptions.origin[0] : '*');
+    res.header('Access-Control-Allow-Origin', allowOrigin);
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, X-Requested-With');
     res.header('Access-Control-Max-Age', '86400');
@@ -44,6 +55,15 @@ app.options('*', (req, res) => {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Rate limit for POST /api/messages (e.g. 20 per 15 minutes per IP)
+const messageCreateLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: parseInt(process.env.RATE_LIMIT_MESSAGES_MAX, 10) || 20,
+    message: { error: 'Too many submissions. Please try again later.' },
+    standardHeaders: true,
+    legacyHeaders: false
+});
 
 // API info endpoint (before static files)
 app.get('/api', (req, res) => {
@@ -377,14 +397,26 @@ async function createTable() {
 
 // API Routes
 
-// GET all messages
+// Parse positive integer from string; return null if invalid
+function parseId(id) {
+    const n = parseInt(id, 10);
+    return Number.isInteger(n) && n > 0 ? n : null;
+}
+
+// GET all messages (with pagination: ?page=1&limit=50)
 app.get('/api/messages', async (req, res) => {
     try {
-        const [rows] = await pool.query(
-            'SELECT * FROM messages ORDER BY timestamp DESC'
-        );
+        const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+        const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 50));
+        const offset = (page - 1) * limit;
 
-        // Transform to frontend format
+        const [rows] = await pool.query(
+            'SELECT * FROM messages ORDER BY timestamp DESC LIMIT ? OFFSET ?',
+            [limit, offset]
+        );
+        const [countResult] = await pool.query('SELECT COUNT(*) AS total FROM messages');
+        const total = countResult[0].total;
+
         const messages = rows.map(row => ({
             id: row.id,
             timestamp: row.timestamp,
@@ -399,41 +431,44 @@ app.get('/api/messages', async (req, res) => {
             read: row.read_status || false
         }));
 
-        res.json(messages);
+        res.json({
+            messages,
+            pagination: { page, limit, total, pages: Math.ceil(total / limit) }
+        });
     } catch (error) {
-        console.error('Error fetching messages:', error);
+        console.error('Error fetching messages:', error.message);
         res.status(500).json({ error: 'Failed to fetch messages' });
     }
 });
 
-// POST new message - saves to database AND sends email
-app.post('/api/messages', async (req, res) => {
+// POST new message - rate limited, saves to database AND sends email
+app.post('/api/messages', messageCreateLimiter, async (req, res) => {
     try {
         const { timestamp, data } = req.body;
 
-        // Validate required fields
         if (!timestamp || !data || !data.name || !data.email || !data.service || !data.message) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
-        // Sanitize input
+        if (!ALLOWED_SERVICES.includes(data.service)) {
+            return res.status(400).json({ error: 'Invalid service. Must be one of: ' + ALLOWED_SERVICES.join(', ') });
+        }
+
         const formData = {
-            name: data.name.substring(0, 100),
-            email: data.email.substring(0, 254),
-            phone: data.phone ? data.phone.substring(0, 20) : null,
-            service: data.service.substring(0, 50),
-            region: data.region ? data.region.substring(0, 20) : null,
-            message: data.message.substring(0, 2000)
+            name: String(data.name).substring(0, 100),
+            email: String(data.email).substring(0, 254),
+            phone: data.phone ? String(data.phone).substring(0, 20) : null,
+            service: data.service,
+            region: data.region ? String(data.region).substring(0, 20) : null,
+            message: String(data.message).substring(0, 2000)
         };
 
-        // Save to database
         const [result] = await pool.query(
             `INSERT INTO messages (timestamp, name, email, phone, service, region, message, read_status)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
             [timestamp, formData.name, formData.email, formData.phone, formData.service, formData.region, formData.message, false]
         );
 
-        // Send email (don't fail if email fails, just log it)
         try {
             await sendContactEmail(formData);
         } catch (emailError) {
@@ -445,32 +480,35 @@ app.post('/api/messages', async (req, res) => {
             message: 'Message saved successfully'
         });
     } catch (error) {
-        console.error('Error saving message:', error);
-        res.status(500).json({ 
-            error: 'Failed to save message',
-            details: error.message 
-        });
+        console.error('Error saving message:', error.message);
+        res.status(500).json({ error: 'Failed to save message' });
     }
 });
 
 // PATCH update message read status
 app.patch('/api/messages/:id', async (req, res) => {
     try {
-        const { id } = req.params;
+        const id = parseId(req.params.id);
+        if (id === null) {
+            return res.status(400).json({ error: 'Invalid message id' });
+        }
         const { read } = req.body;
 
         if (typeof read !== 'boolean') {
             return res.status(400).json({ error: 'read field must be boolean' });
         }
 
-        await pool.query(
+        const [result] = await pool.query(
             'UPDATE messages SET read_status = ? WHERE id = ?',
             [read, id]
         );
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Message not found' });
+        }
 
         res.json({ message: 'Message updated successfully' });
     } catch (error) {
-        console.error('Error updating message:', error);
+        console.error('Error updating message:', error.message);
         res.status(500).json({ error: 'Failed to update message' });
     }
 });
@@ -478,23 +516,36 @@ app.patch('/api/messages/:id', async (req, res) => {
 // DELETE message
 app.delete('/api/messages/:id', async (req, res) => {
     try {
-        const { id } = req.params;
+        const id = parseId(req.params.id);
+        if (id === null) {
+            return res.status(400).json({ error: 'Invalid message id' });
+        }
 
-        await pool.query('DELETE FROM messages WHERE id = ?', [id]);
+        const [result] = await pool.query('DELETE FROM messages WHERE id = ?', [id]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Message not found' });
+        }
 
         res.json({ message: 'Message deleted successfully' });
     } catch (error) {
-        console.error('Error deleting message:', error);
+        console.error('Error deleting message:', error.message);
         res.status(500).json({ error: 'Failed to delete message' });
     }
 });
 
-// Health check
+// Health check (database + email config status)
 app.get('/api/health', async (req, res) => {
     try {
         await pool.query('SELECT 1');
-        res.json({ status: 'ok', database: 'connected' });
+        const dbStatus = 'connected';
+        const emailConfigured = !!(emailConfig.auth.user && emailConfig.auth.pass);
+        res.json({
+            status: 'ok',
+            database: dbStatus,
+            emailConfigured
+        });
     } catch (error) {
+        console.error('Health check failed:', error.message);
         res.status(500).json({ status: 'error', database: 'disconnected' });
     }
 });
