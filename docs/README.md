@@ -10,7 +10,6 @@ A modern, responsive website for a rubbish removal company built with HTML, CSS,
 - **Contact Form**: Interactive contact form for customer inquiries
 - **Mobile Menu**: Hamburger menu for mobile navigation
 - **Eco-Friendly Theme**: Green color scheme reflecting environmental responsibility
-- **Admin Dashboard**: Secure admin panel for managing customer messages
 - **Backend API**: Node.js/Express backend with MySQL database
 - **Database Storage**: Messages stored in MySQL database (runs locally)
 
@@ -45,60 +44,7 @@ A modern, responsive website for a rubbish removal company built with HTML, CSS,
 
 3. Customize the content, colors, and information as needed
 
-## Admin Dashboard
-
-### Accessing the Admin Dashboard
-
-The admin dashboard allows you to view and manage all customer messages submitted through the contact form.
-
-#### First Time Access:
-
-1. Open your browser and navigate to:
-   ```
-   dashboard.html?key==4WatRWY0IDMy4WYlx2YvNWZ
-   ```
-
-2. After the first successful access, the key is saved automatically
-
-3. For subsequent visits, you can simply access:
-   ```
-   dashboard.html
-   ```
-
-#### Changing the Secret Key:
-
-To change the secret key for security:
-
-1. Open `dashboard.html` in a code editor
-2. Find the line:
-   ```javascript
-   const SECRET_KEY = btoa('ecoclean2024admin').split('').reverse().join('');
-   ```
-3. Replace `'ecoclean2024admin'` with your own secret phrase
-4. To generate the new key, open browser console (F12) and run:
-   ```javascript
-   btoa('YOUR_NEW_SECRET').split('').reverse().join('')
-   ```
-5. Use the generated key in the URL: `dashboard.html?key=GENERATED_KEY`
-
-#### Dashboard Features:
-
-- **View Messages**: See all customer inquiries with full details
-- **Statistics**: Total messages, unread count, today's messages, weekly messages
-- **Search**: Search messages by name, email, phone, or content
-- **Filter**: Filter by All, Unread, or Read messages
-- **Mark as Read**: Mark messages as read/unread
-- **Delete**: Remove messages from the database
-- **Auto-refresh**: Dashboard refreshes every 30 seconds
-
-#### Backend & Database:
-
-- **Backend**: Node.js/Express API server
-- **Database**: MySQL (runs locally on your computer)
-- **No external accounts**: Everything runs on your machine
-- **Full control**: You have complete control over your data
-
-#### Backend Setup (Required):
+## Backend Setup (Required)
 
 The backend is required for the website to function. Follow these steps:
 

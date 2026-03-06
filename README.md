@@ -8,10 +8,9 @@ A modern, responsive website for a rubbish removal company built with HTML, CSS,
 rubish removal/
 ├── public/           # Frontend files (HTML, CSS, JS, images)
 │   ├── index.html
-│   ├── dashboard.html
-│   ├── script.js
+│   ├── js/           # JavaScript modular (main.js, api.js, etc.)
 │   ├── styles.css
-│   └── *.png
+│   └── images/       # Imagini
 ├── backend/          # Backend API (Node.js/Express + MySQL)
 │   ├── server.js
 │   ├── package.json
@@ -29,7 +28,7 @@ rubish removal/
 ```bash
 cd backend
 npm install
-cp env.example .env
+cp .env.example .env
 # Edit .env with your MySQL credentials
 npm start
 ```
@@ -49,7 +48,6 @@ Frontend will be available at: `http://localhost:8000`
 
 - **Desktop**: http://localhost:8000
 - **Mobile** (same WiFi): http://192.168.1.7:8000
-- **Dashboard**: http://localhost:8000/dashboard.html?key=4WatRWY0IDMy4WYlx2YvNWZ
 
 ## 📚 Documentation
 
@@ -61,7 +59,6 @@ Frontend will be available at: `http://localhost:8000`
 - **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
 - **Modern UI**: Clean, professional design with smooth animations
 - **Contact Form**: Interactive contact form for customer inquiries
-- **Admin Dashboard**: Secure admin panel for managing customer messages
 - **Backend API**: Node.js/Express backend with MySQL database
 - **Database Storage**: Messages stored in MySQL database (runs locally)
 

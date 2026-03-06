@@ -131,12 +131,6 @@ npm start
 
 3. Accesează: http://localhost:8000
 
-### Accesează dashboard-ul
-
-```
-http://localhost:8000/dashboard.html?key=4WatRWY0IDMy4WYlx2YvNWZ
-```
-
 ## 🔧 Troubleshooting
 
 ### Eroare: "Cannot connect to MySQL"
@@ -179,10 +173,7 @@ http://localhost:8000/dashboard.html?key=4WatRWY0IDMy4WYlx2YvNWZ
    PORT=3001
    ```
 
-2. Actualizează și în `script.js` și `dashboard.html`:
-   ```javascript
-   const API_BASE_URL = 'http://localhost:3001/api';
-   ```
+2. Actualizează URL-ul API în `public/js/config.js` dacă e nevoie (implicit folosește același origin).
 
 ### Eroare: "CORS" în browser
 
@@ -208,10 +199,11 @@ rubish removal/
 │   ├── database.sql       # Script SQL
 │   ├── .env.example       # Template configurare
 │   └── README.md          # Documentație backend
-├── index.html             # Pagina principală
-├── dashboard.html         # Dashboard admin
-├── script.js              # Frontend JavaScript
-└── styles.css             # Stiluri
+├── public/
+│   ├── index.html         # Pagina principală
+│   ├── js/                # JavaScript modular
+│   ├── styles.css         # Stiluri
+│   └── images/            # Imagini
 ```
 
 ## 🔒 Securitate
@@ -236,6 +228,5 @@ După setup, verifică:
 1. ✅ Backend rulează: http://localhost:3000/api/health
 2. ✅ Baza de date există: verifică în MySQL/phpMyAdmin
 3. ✅ Formularul funcționează: trimite un mesaj de test
-4. ✅ Dashboard funcționează: vezi mesajele în dashboard
 
 **Gata!** Site-ul tău funcționează acum cu o bază de date reală, fără conturi externe! 🎉

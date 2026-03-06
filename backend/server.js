@@ -6,16 +6,18 @@ const fs = require('fs');
 const nodemailer = require('nodemailer');
 const rateLimit = require('express-rate-limit');
 
-// Load environment variables from .env (preferred) or env.example (fallback)
-// This makes `npm start` work without manually exporting $env:... variables.
+// Load environment variables from .env (preferred) or .env.example (fallback)
 try {
     const dotenv = require('dotenv');
-    const envPath = fs.existsSync(path.join(__dirname, '.env'))
-        ? path.join(__dirname, '.env')
-        : path.join(__dirname, 'env.example');
-    dotenv.config({ path: envPath });
+    const envPath = path.join(__dirname, '.env');
+    const fallbackPath = path.join(__dirname, '.env.example');
+    if (fs.existsSync(envPath)) {
+        dotenv.config({ path: envPath, override: true });
+    } else {
+        dotenv.config({ path: fallbackPath, override: true });
+    }
 } catch (e) {
-    // dotenv is optional at runtime; if missing, we fall back to process.env/defaults below
+    // dotenv optional at runtime
 }
 
 const app = express();
@@ -56,7 +58,17 @@ app.options('*', (req, res) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rate limit for POST /api/messages (e.g. 20 per 15 minutes per IP)
+// General API rate limit (all /api routes: 100 per 15 min per IP)
+const apiGeneralLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: parseInt(process.env.RATE_LIMIT_API_MAX, 10) || 100,
+    message: { error: 'Too many requests. Please try again later.' },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+app.use('/api', apiGeneralLimiter);
+
+// Rate limit for POST /api/messages (stricter: 20 per 15 minutes per IP)
 const messageCreateLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: parseInt(process.env.RATE_LIMIT_MESSAGES_MAX, 10) || 20,
@@ -64,6 +76,30 @@ const messageCreateLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false
 });
+
+// Auth for protected routes (GET/PATCH/DELETE messages). Requires API_SECRET_KEY in .env; send header Authorization: Bearer <key> or X-API-Key: <key>
+function requireApiKey(req, res, next) {
+    const secret = process.env.API_SECRET_KEY;
+    if (!secret || secret.trim() === '') {
+        return res.status(403).json({
+            error: 'Forbidden',
+            message: 'Access to messages is disabled. Set API_SECRET_KEY in backend/.env to enable and use Authorization: Bearer <key> or X-API-Key: <key>.'
+        });
+    }
+    const authHeader = req.headers.authorization;
+    const apiKeyHeader = req.headers['x-api-key'];
+    const token = (authHeader && authHeader.startsWith('Bearer ')) ? authHeader.slice(7).trim() : (apiKeyHeader || '').trim();
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const crypto = require('crypto');
+    const secretBuf = Buffer.from(secret, 'utf8');
+    const tokenBuf = Buffer.from(token, 'utf8');
+    if (secretBuf.length !== tokenBuf.length || !crypto.timingSafeEqual(secretBuf, tokenBuf)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    next();
+}
 
 // API info endpoint (before static files)
 app.get('/api', (req, res) => {
@@ -92,14 +128,14 @@ const dbConfig = {
 // Create connection pool
 let pool;
 
-// Email configuration
+// Email configuration (trim values in case .env has trailing spaces)
 const emailConfig = {
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT) || 587,
-    secure: false, // true for 465, false for other ports
+    host: (process.env.SMTP_HOST || 'smtp.gmail.com').trim(),
+    port: parseInt(process.env.SMTP_PORT, 10) || 587,
+    secure: false,
     auth: {
-        user: process.env.SMTP_USER || '',
-        pass: process.env.SMTP_PASS || ''
+        user: (process.env.SMTP_USER || '').trim(),
+        pass: (process.env.SMTP_PASS || '').trim()
     }
 };
 
@@ -320,7 +356,7 @@ async function initDatabase() {
         if (!process.env.DB_PASSWORD) {
             console.warn(
                 "⚠️ DB_PASSWORD is empty. If your MySQL root user has a password (common with Docker/MySQL), " +
-                "create backend/.env (or edit backend/env.example) and set DB_PASSWORD, then rerun `npm start`."
+                "create backend/.env from backend/.env.example and set DB_PASSWORD, then rerun `npm start`."
             );
         }
 
@@ -403,8 +439,8 @@ function parseId(id) {
     return Number.isInteger(n) && n > 0 ? n : null;
 }
 
-// GET all messages (with pagination: ?page=1&limit=50)
-app.get('/api/messages', async (req, res) => {
+// GET all messages (with pagination: ?page=1&limit=50) - requires API key if API_SECRET_KEY is set
+app.get('/api/messages', requireApiKey, async (req, res) => {
     try {
         const page = Math.max(1, parseInt(req.query.page, 10) || 1);
         const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 50));
@@ -485,8 +521,8 @@ app.post('/api/messages', messageCreateLimiter, async (req, res) => {
     }
 });
 
-// PATCH update message read status
-app.patch('/api/messages/:id', async (req, res) => {
+// PATCH update message read status - requires API key if API_SECRET_KEY is set
+app.patch('/api/messages/:id', requireApiKey, async (req, res) => {
     try {
         const id = parseId(req.params.id);
         if (id === null) {
@@ -513,8 +549,8 @@ app.patch('/api/messages/:id', async (req, res) => {
     }
 });
 
-// DELETE message
-app.delete('/api/messages/:id', async (req, res) => {
+// DELETE message - requires API key if API_SECRET_KEY is set
+app.delete('/api/messages/:id', requireApiKey, async (req, res) => {
     try {
         const id = parseId(req.params.id);
         if (id === null) {

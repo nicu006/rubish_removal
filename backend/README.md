@@ -167,14 +167,7 @@ Verifică statusul serverului și conexiunea la baza de date.
 
 ## Configurare Frontend
 
-După ce ai pornit backend-ul, actualizează `script.js` și `dashboard.html`:
-
-În ambele fișiere, găsește:
-```javascript
-const API_BASE_URL = 'http://localhost:3000/api';
-```
-
-Dacă rulezi backend-ul pe alt port sau alt host, schimbă URL-ul.
+Frontend-ul folosește URL-ul API relativ (`/api`) când e servit de pe același origin cu backend-ul. Dacă rulezi pe alt port/host, poți modifica `public/js/config.js`.
 
 ## Troubleshooting
 
