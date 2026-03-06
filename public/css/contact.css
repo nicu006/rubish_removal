@@ -259,6 +259,14 @@ button:disabled {
 .camera-capture-btn {
     border-style: solid;
     background: rgba(46, 204, 113, 0.1);
+    display: none; /* Hidden by default on desktop */
+}
+
+/* Show camera button only on mobile/touch devices */
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+    .camera-capture-btn {
+        display: flex;
+    }
 }
 
 .image-upload-label:hover,
