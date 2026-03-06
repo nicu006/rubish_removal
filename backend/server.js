@@ -5,6 +5,40 @@ const path = require('path');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
 const rateLimit = require('express-rate-limit');
+const multer = require('multer');
+
+// Configure multer for image uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadDir = path.join(__dirname, 'uploads');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.'), false);
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 5 * 1024 * 1024, // 5MB max per file
+        files: 5 // Maximum 5 files
+    }
+});
 
 // Load environment variables from .env (preferred) or .env.example (fallback)
 try {
@@ -77,7 +111,7 @@ const messageCreateLimiter = rateLimit({
     legacyHeaders: false
 });
 
-// Auth for protected routes (GET/PATCH/DELETE messages). Requires API_SECRET_KEY in .env; send header Authorization: Bearer <key> or X-API-Key: <key>
+// Auth for protected routes (GET/PATCH/DELETE messages). Requires API_SECRET_KEY in .env; send header Authorization: Bearer <key> or X-API-Key: <key> or query ?token=<key>
 function requireApiKey(req, res, next) {
     const secret = process.env.API_SECRET_KEY;
     if (!secret || secret.trim() === '') {
@@ -88,7 +122,8 @@ function requireApiKey(req, res, next) {
     }
     const authHeader = req.headers.authorization;
     const apiKeyHeader = req.headers['x-api-key'];
-    const token = (authHeader && authHeader.startsWith('Bearer ')) ? authHeader.slice(7).trim() : (apiKeyHeader || '').trim();
+    const queryToken = req.query.token; // Allow token in query string for image loading
+    const token = (authHeader && authHeader.startsWith('Bearer ')) ? authHeader.slice(7).trim() : (apiKeyHeader || queryToken || '').trim();
     if (!token) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
@@ -104,7 +139,7 @@ function requireApiKey(req, res, next) {
 // API info endpoint (before static files)
 app.get('/api', (req, res) => {
     res.json({
-        message: 'EcoClean Backend API',
+        message: 'EasyWaste Backend API',
         version: '1.0.0',
         endpoints: {
             health: '/api/health',
@@ -145,7 +180,7 @@ const contactEmail = process.env.CONTACT_EMAIL || 'softionyxgroup@gmail.com';
 const transporter = nodemailer.createTransport(emailConfig);
 
 // Function to send email
-async function sendContactEmail(formData) {
+async function sendContactEmail(formData, attachments = []) {
     const { name, email, phone, service, region, message } = formData;
     
     const serviceLabels = {
@@ -205,7 +240,7 @@ async function sendContactEmail(formData) {
                     <tr>
                         <td style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); padding: 30px 40px; text-align: center;">
                             <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">
-                                🗑️ EcoClean
+                                � EasyWaste
                             </h1>
                             <p style="margin: 8px 0 0 0; color: #ffffff; font-size: 16px; opacity: 0.95;">
                                 New Contact Form Submission
@@ -292,10 +327,10 @@ async function sendContactEmail(formData) {
                     <tr>
                         <td style="background-color: #2c3e50; padding: 25px 40px; text-align: center;">
                             <p style="margin: 0; color: #bdc3c7; font-size: 13px;">
-                                This email was sent from the EcoClean website contact form.
+                                This email was sent from the EasyWaste website contact form.
                             </p>
                             <p style="margin: 10px 0 0 0; color: #95a5a6; font-size: 12px;">
-                                © ${new Date().getFullYear()} EcoClean. All rights reserved.
+                                © ${new Date().getFullYear()} EasyWaste. All rights reserved.
                             </p>
                         </td>
                     </tr>
@@ -309,7 +344,7 @@ async function sendContactEmail(formData) {
     
     const emailText = `
 ═══════════════════════════════════════════════════════
-    🗑️ EcoClean - New Contact Form Submission
+    � EasyWaste - New Contact Form Submission
 ═══════════════════════════════════════════════════════
 
 📅 Date: ${formattedDate}
@@ -331,12 +366,16 @@ Reply to: ${email}
     `;
     
     const mailOptions = {
-        from: `"EcoClean Website" <${emailConfig.auth.user}>`,
+        from: `"EasyWaste Website" <${emailConfig.auth.user}>`,
         to: contactEmail,
         replyTo: email,
         subject: `🗑️ New Inquiry: ${safeService} - ${safeName}`,
         text: emailText,
-        html: emailHtml
+        html: emailHtml,
+        attachments: attachments.map(file => ({
+            filename: file.originalname,
+            path: file.path
+        }))
     };
     
     try {
@@ -403,6 +442,7 @@ async function createTable() {
                 service VARCHAR(50) NOT NULL,
                 region VARCHAR(20),
                 message TEXT NOT NULL,
+                images TEXT,
                 read_status BOOLEAN DEFAULT FALSE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_timestamp (timestamp DESC),
@@ -423,6 +463,33 @@ async function createTable() {
             `);
             console.log('✅ Added region column to messages table');
         }
+
+        // Check if images column exists
+        const [imagesCol] = await pool.query(`
+            SELECT COLUMN_NAME 
+            FROM INFORMATION_SCHEMA.COLUMNS 
+            WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'messages' AND COLUMN_NAME = 'images'
+        `, [dbConfig.database]);
+
+        if (imagesCol.length === 0) {
+            await pool.query(`ALTER TABLE messages ADD COLUMN images TEXT AFTER message`);
+            console.log('✅ Added images column to messages table');
+        }
+        
+        // Create visitors table for tracking
+        const createVisitorsTableSQL = `
+            CREATE TABLE IF NOT EXISTS visitors (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                ip_address VARCHAR(45),
+                user_agent TEXT,
+                page VARCHAR(255) DEFAULT '/',
+                referrer VARCHAR(500),
+                visited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_visited_at (visited_at DESC),
+                INDEX idx_ip (ip_address)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        `;
+        await pool.query(createVisitorsTableSQL);
         
         console.log('✅ Table created/verified successfully');
     } catch (error) {
@@ -462,7 +529,8 @@ app.get('/api/messages', requireApiKey, async (req, res) => {
                 phone: row.phone,
                 service: row.service,
                 region: row.region || null,
-                message: row.message
+                message: row.message,
+                images: row.images ? JSON.parse(row.images) : []
             },
             read: row.read_status || false
         }));
@@ -478,9 +546,19 @@ app.get('/api/messages', requireApiKey, async (req, res) => {
 });
 
 // POST new message - rate limited, saves to database AND sends email
-app.post('/api/messages', messageCreateLimiter, async (req, res) => {
+app.post('/api/messages', messageCreateLimiter, upload.array('images', 5), async (req, res) => {
     try {
-        const { timestamp, data } = req.body;
+        // Parse data from FormData or JSON
+        let timestamp, data;
+        if (req.body.data && typeof req.body.data === 'string') {
+            // FormData submission
+            data = JSON.parse(req.body.data);
+            timestamp = req.body.timestamp;
+        } else {
+            // JSON submission (backward compatible)
+            timestamp = req.body.timestamp;
+            data = req.body.data;
+        }
 
         if (!timestamp || !data || !data.name || !data.email || !data.service || !data.message) {
             return res.status(400).json({ error: 'Missing required fields' });
@@ -499,14 +577,17 @@ app.post('/api/messages', messageCreateLimiter, async (req, res) => {
             message: String(data.message).substring(0, 2000)
         };
 
+        // Store image filenames
+        const imageFilenames = (req.files || []).map(f => f.filename);
+
         const [result] = await pool.query(
-            `INSERT INTO messages (timestamp, name, email, phone, service, region, message, read_status)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-            [timestamp, formData.name, formData.email, formData.phone, formData.service, formData.region, formData.message, false]
+            `INSERT INTO messages (timestamp, name, email, phone, service, region, message, images, read_status)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [timestamp, formData.name, formData.email, formData.phone, formData.service, formData.region, formData.message, imageFilenames.length > 0 ? JSON.stringify(imageFilenames) : null, false]
         );
 
         try {
-            await sendContactEmail(formData);
+            await sendContactEmail(formData, req.files || []);
         } catch (emailError) {
             console.error('⚠️ Email sending failed, but message saved to database:', emailError.message);
         }
@@ -586,10 +667,109 @@ app.get('/api/health', async (req, res) => {
     }
 });
 
+// POST track visitor - public endpoint for visitor tracking
+app.post('/api/visitors', async (req, res) => {
+    try {
+        const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress || 'unknown';
+        const userAgent = req.headers['user-agent'] || 'unknown';
+        const { page, referrer } = req.body;
+
+        await pool.query(
+            'INSERT INTO visitors (ip_address, user_agent, page, referrer) VALUES (?, ?, ?, ?)',
+            [ip.substring(0, 45), userAgent.substring(0, 1000), (page || '/').substring(0, 255), (referrer || '').substring(0, 500)]
+        );
+
+        res.status(201).json({ message: 'Visit tracked' });
+    } catch (error) {
+        console.error('Error tracking visitor:', error.message);
+        res.status(500).json({ error: 'Failed to track visit' });
+    }
+});
+
+// GET dashboard stats - requires API key
+app.get('/api/dashboard', requireApiKey, async (req, res) => {
+    try {
+        // Total visitors
+        const [totalVisitors] = await pool.query('SELECT COUNT(*) AS total FROM visitors');
+        
+        // Unique visitors (by IP)
+        const [uniqueVisitors] = await pool.query('SELECT COUNT(DISTINCT ip_address) AS total FROM visitors');
+        
+        // Today's visitors
+        const [todayVisitors] = await pool.query(
+            'SELECT COUNT(*) AS total FROM visitors WHERE DATE(visited_at) = CURDATE()'
+        );
+        
+        // This week's visitors
+        const [weekVisitors] = await pool.query(
+            'SELECT COUNT(*) AS total FROM visitors WHERE visited_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)'
+        );
+        
+        // Total messages
+        const [totalMessages] = await pool.query('SELECT COUNT(*) AS total FROM messages');
+        
+        // Unread messages
+        const [unreadMessages] = await pool.query('SELECT COUNT(*) AS total FROM messages WHERE read_status = FALSE');
+        
+        // Messages by service
+        const [messagesByService] = await pool.query(
+            'SELECT service, COUNT(*) AS count FROM messages GROUP BY service ORDER BY count DESC'
+        );
+        
+        // Visitors per day (last 7 days)
+        const [visitorsPerDay] = await pool.query(`
+            SELECT DATE(visited_at) AS date, COUNT(*) AS count 
+            FROM visitors 
+            WHERE visited_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+            GROUP BY DATE(visited_at) 
+            ORDER BY date ASC
+        `);
+        
+        // Recent messages (last 10)
+        const [recentMessages] = await pool.query(
+            'SELECT id, timestamp, name, email, phone, service, region, message, images, read_status, created_at FROM messages ORDER BY timestamp DESC LIMIT 10'
+        );
+
+        res.json({
+            visitors: {
+                total: totalVisitors[0].total,
+                unique: uniqueVisitors[0].total,
+                today: todayVisitors[0].total,
+                thisWeek: weekVisitors[0].total,
+                perDay: visitorsPerDay
+            },
+            messages: {
+                total: totalMessages[0].total,
+                unread: unreadMessages[0].total,
+                byService: messagesByService,
+                recent: recentMessages.map(row => ({
+                    id: row.id,
+                    timestamp: row.timestamp,
+                    name: row.name,
+                    email: row.email,
+                    phone: row.phone,
+                    service: row.service,
+                    region: row.region,
+                    message: row.message,
+                    images: row.images ? JSON.parse(row.images) : [],
+                    read: row.read_status,
+                    createdAt: row.created_at
+                }))
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching dashboard stats:', error.message);
+        res.status(500).json({ error: 'Failed to fetch dashboard stats' });
+    }
+});
+
 // Serve index.html explicitly for root route
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
+
+// Serve uploaded images (requires API key for security)
+app.use('/api/uploads', requireApiKey, express.static(path.join(__dirname, 'uploads')));
 
 // Serve frontend files from public folder (AFTER all API routes)
 // This allows mobile devices to access everything from the same origin (no CORS issues)

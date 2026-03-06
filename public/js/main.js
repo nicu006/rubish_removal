@@ -1,28 +1,39 @@
 /**
- * Entry point: inits nav, form, calculator, FAQ, animations; health check; live validation; test backend.
+ * Entry point: inits nav, form, FAQ, animations; health check; live validation; test backend.
  */
 
 import { API_BASE_URL, setBackendAvailable } from './config.js';
 import { initNavScroll } from './nav-scroll.js';
 import { initContactForm } from './contact-form.js';
-import { initCalculator } from './calculator.js';
 import { initFAQ } from './faq.js';
 import { initAnimations } from './animations.js';
 import { showNotification, injectStyles } from './utils.js';
 
-initNavScroll();
 injectStyles();
 
 document.addEventListener('DOMContentLoaded', () => {
     const footerYear = document.getElementById('footer-year');
     if (footerYear) footerYear.textContent = new Date().getFullYear();
 
+    initNavScroll();
     initAnimations();
-    initCalculator();
     initFAQ();
     initContactForm();
 
-    const healthUrl = API_BASE_URL.startsWith('/')
+    // Track visitor
+    const visitorUrl = API_BASE_URL.startsWith('/')
+        ? `${window.location.origin}${API_BASE_URL}/visitors`
+        : `${API_BASE_URL}/visitors`;
+    fetch(visitorUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            page: window.location.pathname,
+            referrer: document.referrer || ''
+        })
+    }).catch(() => { /* silent fail */ });
+
+    const healthUrl = API_BASE_URL.startsWith('/') 
         ? `${window.location.origin}${API_BASE_URL}/health`
         : `${API_BASE_URL}/health`;
     const controller = new AbortController();

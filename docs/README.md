@@ -1,4 +1,4 @@
-# EcoClean Rubbish Removal Website
+# EasyWaste Removal Website
 
 A modern, responsive website for a rubbish removal company built with HTML, CSS, and JavaScript.
 

@@ -1,6 +1,6 @@
-# EcoClean Backend API
+# EasyWaste Backend API
 
-Backend Node.js/Express cu MySQL pentru site-ul EcoClean.
+Backend Node.js/Express cu MySQL pentru site-ul EasyWaste.
 
 ## Cerințe
 

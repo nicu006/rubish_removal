@@ -136,8 +136,7 @@
         font-size: 3rem;
     }
 
-    .contact-form,
-    .calculator-form {
+    .contact-form {
         padding: 2rem 1.5rem;
     }
 
@@ -153,14 +152,6 @@
 
     .contact-content {
         grid-template-columns: 1fr;
-    }
-
-    .calculator-content {
-        grid-template-columns: 1fr;
-    }
-
-    .calculator-result {
-        position: static;
     }
 
     .pricing-grid {
@@ -335,8 +326,7 @@
     .service-card,
     .contact-form,
     .pricing-card,
-    .feature-card,
-    .calculator-form {
+    .feature-card {
         padding: 1.5rem 1.2rem;
     }
 
@@ -396,5 +386,17 @@
     .back-to-top svg {
         width: 20px;
         height: 20px;
+    }
+
+    .whatsapp-btn {
+        width: 45px;
+        height: 45px;
+        bottom: 6.5rem;
+        right: 1.5rem;
+    }
+
+    .whatsapp-btn svg {
+        width: 22px;
+        height: 22px;
     }
 }

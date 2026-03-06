@@ -16,6 +16,86 @@ export function initContactForm() {
     const contactForm = document.getElementById('contactForm');
     if (!contactForm) return;
 
+    // Image upload handling
+    const imageInput = document.getElementById('images');
+    const imagePreview = document.getElementById('imagePreview');
+    let selectedFiles = [];
+
+    if (imageInput && imagePreview) {
+        imageInput.addEventListener('change', (e) => {
+            handleImageFiles(Array.from(e.target.files));
+        });
+    }
+
+    // Camera capture handling
+    const cameraBtn = document.getElementById('cameraBtn');
+    const cameraInput = document.getElementById('cameraInput');
+    
+    if (cameraBtn && cameraInput) {
+        cameraBtn.addEventListener('click', () => {
+            cameraInput.click();
+        });
+        
+        cameraInput.addEventListener('change', (e) => {
+            handleImageFiles(Array.from(e.target.files));
+            cameraInput.value = ''; // Reset for next capture
+        });
+    }
+
+    function handleImageFiles(newFiles) {
+        // Validate file count
+        if (selectedFiles.length + newFiles.length > 5) {
+            showNotification('Maximum 5 images allowed', 'error');
+            return;
+        }
+        
+        // Validate each file
+        for (const file of newFiles) {
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification(`${file.name} is too large. Max 5MB per image.`, 'error');
+                return;
+            }
+            if (!['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type)) {
+                showNotification(`${file.name} is not a supported image format.`, 'error');
+                return;
+            }
+        }
+        
+        selectedFiles = [...selectedFiles, ...newFiles];
+        updateImagePreview();
+    }
+
+    function updateImagePreview() {
+        if (!imagePreview) return;
+        imagePreview.innerHTML = '';
+        
+        selectedFiles.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const div = document.createElement('div');
+                div.className = 'preview-item';
+                div.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview ${index + 1}">
+                    <button type="button" class="preview-remove" data-index="${index}">&times;</button>
+                `;
+                imagePreview.appendChild(div);
+                
+                div.querySelector('.preview-remove').addEventListener('click', () => {
+                    selectedFiles.splice(index, 1);
+                    updateImagePreview();
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function clearImageUpload() {
+        selectedFiles = [];
+        if (imagePreview) imagePreview.innerHTML = '';
+        if (imageInput) imageInput.value = '';
+        if (cameraInput) cameraInput.value = '';
+    }
+
     contactForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const nameInput = document.getElementById('name');
@@ -86,15 +166,16 @@ export function initContactForm() {
         const submitButton = contactForm.querySelector('button[type="submit"]');
         if (submitButton) {
             submitButton.disabled = true;
-            submitButton.textContent = 'Sending…';
+            submitButton.textContent = selectedFiles.length > 0 ? 'Uploading…' : 'Sending…';
         }
         const formLiveRegion = document.getElementById('form-error-announcer');
         if (formLiveRegion) formLiveRegion.textContent = '';
 
-        saveMessageToBackend(messageData)
+        saveMessageToBackend(messageData, selectedFiles)
             .then(() => {
                 showNotification('Thank you for your message! We will get back to you soon.', 'success');
                 contactForm.reset();
+                clearImageUpload();
                 [nameInput, emailInput, phoneInput, serviceInput, regionInput, messageInput].forEach((input) => {
                     if (input) {
                         input.classList.remove('error', 'valid');

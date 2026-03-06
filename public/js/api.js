@@ -4,35 +4,60 @@
 
 import { API_BASE_URL, setBackendAvailable } from './config.js';
 
-export async function saveMessageToBackend(messageData) {
+export async function saveMessageToBackend(messageData, files = []) {
     const url = API_BASE_URL.startsWith('/')
         ? `${window.location.origin}${API_BASE_URL}/messages`
         : `${API_BASE_URL}/messages`;
 
-    const requestBody = {
-        timestamp: messageData.timestamp,
-        data: messageData.data,
-        read: false
-    };
-
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
 
     try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify(requestBody),
-            mode: 'cors',
-            credentials: 'omit',
-            signal: controller.signal,
-            cache: 'no-cache',
-            redirect: 'follow'
-        });
+        let response;
+        
+        if (files && files.length > 0) {
+            // Use FormData for file uploads
+            const formData = new FormData();
+            formData.append('timestamp', messageData.timestamp);
+            formData.append('data', JSON.stringify(messageData.data));
+            
+            files.forEach(file => {
+                formData.append('images', file);
+            });
+            
+            response = await fetch(url, {
+                method: 'POST',
+                body: formData,
+                mode: 'cors',
+                credentials: 'omit',
+                signal: controller.signal,
+                cache: 'no-cache',
+                redirect: 'follow'
+            });
+        } else {
+            // Use JSON for text-only submissions
+            const requestBody = {
+                timestamp: messageData.timestamp,
+                data: messageData.data,
+                read: false
+            };
+            
+            response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(requestBody),
+                mode: 'cors',
+                credentials: 'omit',
+                signal: controller.signal,
+                cache: 'no-cache',
+                redirect: 'follow'
+            });
+        }
+        
         clearTimeout(timeoutId);
 
         const responseText = await response.text();

@@ -221,3 +221,62 @@
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3), 0 4px 12px rgba(46, 204, 113, 0.2);
 }
+
+/* Single Large Pricing Card */
+.pricing-single {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.pricing-card-large {
+    max-width: 700px;
+    width: 100%;
+    padding: 3rem;
+    transform: none;
+}
+
+.pricing-card-large .pricing-header h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.pricing-card-large .contact-text {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.pricing-features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 2rem;
+    margin-bottom: 2rem;
+}
+
+.pricing-features-grid .pricing-features {
+    min-height: auto;
+    margin-bottom: 0;
+}
+
+.pricing-card-large .btn {
+    max-width: 300px;
+    margin: 1rem auto 0;
+}
+
+@media (max-width: 600px) {
+    .pricing-features-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    
+    .pricing-card-large {
+        padding: 2rem 1.5rem;
+    }
+    
+    .pricing-card-large .contact-text {
+        font-size: 2rem;
+    }
+}

@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyWaste Dashboard - Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --secondary: #34495e;
+            --bg-dark: #1a1a2e;
+            --bg-card: #16213e;
+            --bg-card-hover: #1f3460;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --success: #2ecc71;
+            --info: #3498db;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-card);
+            padding: 2rem 1.5rem;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 3rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--primary);
+        }
+
+        .nav-link svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .api-key-input {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .api-key-input input {
+            padding: 0.625rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            width: 200px;
+        }
+
+        .api-key-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(46, 204, 113, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.visitors { background: rgba(52, 152, 219, 0.2); color: var(--info); }
+        .stat-icon.unique { background: rgba(155, 89, 182, 0.2); color: #9b59b6; }
+        .stat-icon.messages { background: rgba(46, 204, 113, 0.2); color: var(--success); }
+        .stat-icon.unread { background: rgba(231, 76, 60, 0.2); color: var(--danger); }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-trend.up { color: var(--success); }
+        .stat-trend.down { color: var(--danger); }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .donut-chart-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .donut-chart {
+            position: relative;
+            width: 180px;
+            height: 180px;
+        }
+
+        .donut-chart canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .donut-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .donut-center-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .donut-center-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .chart-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .legend-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            flex: 1;
+        }
+
+        .legend-value {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .legend-percent {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            min-width: 45px;
+            text-align: right;
+        }
+
+        /* Messages Section */
+        .section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* Messages Table */
+        .messages-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .messages-table th,
+        .messages-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .messages-table th {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .messages-table tbody tr {
+            transition: background 0.2s ease;
+        }
+
+        .messages-table tbody tr:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .messages-table tbody tr.unread {
+            background: rgba(46, 204, 113, 0.05);
+        }
+
+        .message-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .message-email {
+            color: var(--info);
+            font-size: 0.875rem;
+        }
+
+        .message-preview {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .service-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .service-badge.residential { background: rgba(52, 152, 219, 0.2); color: var(--info); }
+        .service-badge.commercial { background: rgba(155, 89, 182, 0.2); color: #9b59b6; }
+        .service-badge.bulk { background: rgba(243, 156, 18, 0.2); color: var(--warning); }
+        .service-badge.recycling { background: rgba(46, 204, 113, 0.2); color: var(--success); }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-dot.unread { background: var(--danger); }
+        .status-dot.read { background: var(--success); }
+
+        .message-date {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-primary);
+        }
+
+        .action-btn.delete:hover {
+            color: var(--danger);
+        }
+
+        .action-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg-dark);
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .login-card h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .login-card p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-dark);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-card input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .login-card .btn {
+            width: 100%;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .error-msg {
+            color: var(--danger);
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        /* Message Detail Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .detail-row {
+            margin-bottom: 1rem;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            color: var(--text-primary);
+        }
+
+        .detail-value.message {
+            background: var(--bg-dark);
+            padding: 1rem;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        /* Image Gallery in Modal */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            color: var(--primary);
+            margin-left: 8px;
+        }
+
+        /* Lightbox for full image view */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .messages-table {
+                font-size: 0.875rem;
+            }
+
+            .messages-table th,
+            .messages-table td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .message-preview {
+                max-width: 150px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .api-key-input {
+                flex-direction: column;
+            }
+
+            .api-key-input input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <div class="logo" style="justify-content: center; margin-bottom: 2rem;">
+                <div class="logo-icon">�</div>
+                <span class="logo-text">Easy<span style="color: var(--primary);">Waste</span></span>
+            </div>
+            <h2>Dashboard Login</h2>
+            <p>Enter your API key to access the dashboard</p>
+            <input type="password" id="loginApiKey" placeholder="Enter API Key" autocomplete="off">
+            <button class="btn btn-primary" id="loginBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+                </svg>
+                Login
+            </button>
+            <p class="error-msg" id="loginError">Invalid API key. Please try again.</p>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">�</div>
+                <span class="logo-text">Easy<span style="color: var(--primary);">Waste</span></span>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Back to Website
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h1>Dashboard</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="refreshBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                        Refresh
+                    </button>
+                    <button class="btn btn-secondary" id="logoutBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                        Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value" id="totalVisitors">-</div>
+                            <div class="stat-label">Total Page Views</div>
+                        </div>
+                        <div class="stat-icon visitors">👁️</div>
+                    </div>
+                    <div class="stat-trend up" id="todayVisitors">
+                        <span>Today: -</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value" id="uniqueVisitors">-</div>
+                            <div class="stat-label">Unique Visitors</div>
+                        </div>
+                        <div class="stat-icon unique">👤</div>
+                    </div>
+                    <div class="stat-trend" id="weekVisitors">
+                        <span>This week: -</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value" id="totalMessages">-</div>
+                            <div class="stat-label">Total Messages</div>
+                        </div>
+                        <div class="stat-icon messages">✉️</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value" id="unreadMessages">-</div>
+                            <div class="stat-label">Unread Messages</div>
+                        </div>
+                        <div class="stat-icon unread">🔔</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3 class="chart-title">Services Distribution</h3>
+                    <div class="donut-chart-container">
+                        <div class="donut-chart">
+                            <canvas id="servicesChart" width="180" height="180"></canvas>
+                            <div class="donut-center">
+                                <div class="donut-center-value" id="chartTotal">0</div>
+                                <div class="donut-center-label">Total</div>
+                            </div>
+                        </div>
+                        <div class="chart-legend" id="chartLegend">
+                            <!-- Legend items will be injected here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Section -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Messages</h2>
+                </div>
+                <div id="messagesContainer">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Message Detail Modal -->
+    <div class="modal-overlay" id="messageModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Message Details</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox for full image view -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="closeLightbox">&times;</button>
+        <img src="" alt="Full size image" id="lightboxImg">
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let apiKey = localStorage.getItem('easywaste_api_key') || '';
+
+        // DOM Elements
+        const loginScreen = document.getElementById('loginScreen');
+        const dashboard = document.getElementById('dashboard');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginApiKey = document.getElementById('loginApiKey');
+        const loginError = document.getElementById('loginError');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const messageModal = document.getElementById('messageModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalBody = document.getElementById('modalBody');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const closeLightbox = document.getElementById('closeLightbox');
+
+        // Lightbox functionality
+        function openLightbox(src) {
+            lightboxImg.src = src;
+            lightbox.classList.add('active');
+        }
+
+        closeLightbox.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+        });
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                lightbox.classList.remove('active');
+            }
+        });
+
+        // Check if already logged in
+        if (apiKey) {
+            showDashboard();
+        }
+
+        // Login
+        loginBtn.addEventListener('click', async () => {
+            const key = loginApiKey.value.trim();
+            if (!key) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/api/dashboard`, {
+                    headers: { 'Authorization': `Bearer ${key}` }
+                });
+
+                if (res.ok) {
+                    apiKey = key;
+                    localStorage.setItem('easywaste_api_key', key);
+                    loginError.style.display = 'none';
+                    showDashboard();
+                } else {
+                    loginError.style.display = 'block';
+                }
+            } catch (e) {
+                loginError.textContent = 'Connection error. Is the server running?';
+                loginError.style.display = 'block';
+            }
+        });
+
+        loginApiKey.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') loginBtn.click();
+        });
+
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            apiKey = '';
+            localStorage.removeItem('easywaste_api_key');
+            dashboard.style.display = 'none';
+            loginScreen.style.display = 'flex';
+            loginApiKey.value = '';
+        });
+
+        // Refresh
+        refreshBtn.addEventListener('click', loadDashboard);
+
+        // Close Modal
+        closeModal.addEventListener('click', () => {
+            messageModal.classList.remove('active');
+        });
+
+        messageModal.addEventListener('click', (e) => {
+            if (e.target === messageModal) {
+                messageModal.classList.remove('active');
+            }
+        });
+
+        function showDashboard() {
+            loginScreen.style.display = 'none';
+            dashboard.style.display = 'grid';
+            loadDashboard();
+        }
+
+        async function loadDashboard() {
+            try {
+                const res = await fetch(`${API_BASE}/api/dashboard`, {
+                    headers: { 'Authorization': `Bearer ${apiKey}` }
+                });
+
+                if (res.status === 401) {
+                    logoutBtn.click();
+                    return;
+                }
+
+                const data = await res.json();
+                updateStats(data);
+                renderMessages(data.messages.recent);
+            } catch (e) {
+                console.error('Error loading dashboard:', e);
+            }
+        }
+
+        function updateStats(data) {
+            document.getElementById('totalVisitors').textContent = data.visitors.total.toLocaleString();
+            document.getElementById('uniqueVisitors').textContent = data.visitors.unique.toLocaleString();
+            document.getElementById('todayVisitors').innerHTML = `<span>Today: ${data.visitors.today}</span>`;
+            document.getElementById('weekVisitors').innerHTML = `<span>This week: ${data.visitors.thisWeek}</span>`;
+            document.getElementById('totalMessages').textContent = data.messages.total.toLocaleString();
+            document.getElementById('unreadMessages').textContent = data.messages.unread.toLocaleString();
+            
+            // Render services chart
+            renderServicesChart(data.messages.byService, data.messages.total);
+        }
+
+        function renderServicesChart(byService, total) {
+            const canvas = document.getElementById('servicesChart');
+            const ctx = canvas.getContext('2d');
+            const legendContainer = document.getElementById('chartLegend');
+            const chartTotal = document.getElementById('chartTotal');
+            
+            // Service colors
+            const colors = {
+                residential: '#3498db',
+                commercial: '#9b59b6',
+                bulk: '#f39c12',
+                recycling: '#2ecc71'
+            };
+            
+            const labels = {
+                residential: 'Residential',
+                commercial: 'Commercial',
+                bulk: 'Bulk Removal',
+                recycling: 'Recycling'
+            };
+            
+            chartTotal.textContent = total;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (!byService || byService.length === 0 || total === 0) {
+                // Draw empty state
+                ctx.beginPath();
+                ctx.arc(90, 90, 70, 0, 2 * Math.PI);
+                ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                ctx.lineWidth = 20;
+                ctx.stroke();
+                legendContainer.innerHTML = '<div class="legend-item"><span class="legend-label">No data yet</span></div>';
+                return;
+            }
+            
+            // Draw donut chart
+            const centerX = 90;
+            const centerY = 90;
+            const radius = 70;
+            const lineWidth = 20;
+            
+            let startAngle = -0.5 * Math.PI; // Start from top
+            
+            byService.forEach(item => {
+                const sliceAngle = (item.count / total) * 2 * Math.PI;
+                const endAngle = startAngle + sliceAngle;
+                
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.strokeStyle = colors[item.service] || '#666';
+                ctx.lineWidth = lineWidth;
+                ctx.lineCap = 'butt';
+                ctx.stroke();
+                
+                startAngle = endAngle;
+            });
+            
+            // Add inner circle to create donut effect
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius - lineWidth, 0, 2 * Math.PI);
+            ctx.fillStyle = '#16213e';
+            ctx.fill();
+            
+            // Update legend
+            legendContainer.innerHTML = byService.map(item => {
+                const percent = ((item.count / total) * 100).toFixed(1);
+                return `
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: ${colors[item.service] || '#666'}"></div>
+                        <span class="legend-label">${labels[item.service] || item.service}</span>
+                        <span class="legend-value">${item.count}</span>
+                        <span class="legend-percent">${percent}%</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderMessages(messages) {
+            const container = document.getElementById('messagesContainer');
+
+            if (!messages || messages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                        <p>No messages yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <table class="messages-table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Contact</th>
+                            <th>Service</th>
+                            <th>Message</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${messages.map(msg => `
+                            <tr class="${msg.read ? '' : 'unread'}" data-id="${msg.id}">
+                                <td><span class="status-dot ${msg.read ? 'read' : 'unread'}"></span></td>
+                                <td>
+                                    <div class="message-name">${escapeHtml(msg.name)}</div>
+                                    <div class="message-email">${escapeHtml(msg.email)}${msg.images && msg.images.length > 0 ? `<span class="image-badge">📷 ${msg.images.length}</span>` : ''}</div>
+                                </td>
+                                <td><span class="service-badge ${msg.service}">${msg.service}</span></td>
+                                <td><div class="message-preview">${escapeHtml(msg.message)}</div></td>
+                                <td><span class="message-date">${formatDate(msg.createdAt)}</span></td>
+                                <td>
+                                    <button class="action-btn view-btn" title="View" data-msg='${JSON.stringify(msg).replace(/'/g, "&#39;")}'>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    </button>
+                                    <button class="action-btn toggle-read-btn" title="${msg.read ? 'Mark as unread' : 'Mark as read'}" data-id="${msg.id}" data-read="${msg.read}">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                                    </button>
+                                    <button class="action-btn delete delete-btn" title="Delete" data-id="${msg.id}">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            // Add event listeners
+            container.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const msg = JSON.parse(btn.dataset.msg);
+                    showMessageModal(msg);
+                });
+            });
+
+            container.querySelectorAll('.toggle-read-btn').forEach(btn => {
+                btn.addEventListener('click', () => toggleRead(btn.dataset.id, btn.dataset.read === 'true'));
+            });
+
+            container.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', () => deleteMessage(btn.dataset.id));
+            });
+        }
+
+        function showMessageModal(msg) {
+            const imagesHtml = msg.images && msg.images.length > 0 ? `
+                <div class="detail-row">
+                    <div class="detail-label">Attached Images (${msg.images.length})</div>
+                    <div class="image-gallery">
+                        ${msg.images.map(img => `
+                            <div class="gallery-item" onclick="openLightbox('${API_BASE}/api/uploads/${img}?token=${apiKey}')">
+                                <img src="${API_BASE}/api/uploads/${img}?token=${apiKey}" alt="Attachment" loading="lazy">
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : '';
+
+            modalBody.innerHTML = `
+                <div class="detail-row">
+                    <div class="detail-label">Name</div>
+                    <div class="detail-value">${escapeHtml(msg.name)}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Email</div>
+                    <div class="detail-value"><a href="mailto:${escapeHtml(msg.email)}" style="color: var(--info);">${escapeHtml(msg.email)}</a></div>
+                </div>
+                ${msg.phone ? `
+                <div class="detail-row">
+                    <div class="detail-label">Phone</div>
+                    <div class="detail-value"><a href="tel:${escapeHtml(msg.phone)}" style="color: var(--info);">${escapeHtml(msg.phone)}</a></div>
+                </div>
+                ` : ''}
+                <div class="detail-row">
+                    <div class="detail-label">Service</div>
+                    <div class="detail-value"><span class="service-badge ${msg.service}">${msg.service}</span></div>
+                </div>
+                ${msg.region ? `
+                <div class="detail-row">
+                    <div class="detail-label">Region</div>
+                    <div class="detail-value">${escapeHtml(msg.region)}</div>
+                </div>
+                ` : ''}
+                <div class="detail-row">
+                    <div class="detail-label">Date</div>
+                    <div class="detail-value">${formatDate(msg.createdAt)}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Message</div>
+                    <div class="detail-value message">${escapeHtml(msg.message)}</div>
+                </div>
+                ${imagesHtml}
+            `;
+            messageModal.classList.add('active');
+
+            // Mark as read if unread
+            if (!msg.read) {
+                toggleRead(msg.id, false);
+            }
+        }
+
+        async function toggleRead(id, currentRead) {
+            try {
+                await fetch(`${API_BASE}/api/messages/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({ read: !currentRead })
+                });
+                loadDashboard();
+            } catch (e) {
+                console.error('Error toggling read status:', e);
+            }
+        }
+
+        async function deleteMessage(id) {
+            if (!confirm('Are you sure you want to delete this message?')) return;
+
+            try {
+                await fetch(`${API_BASE}/api/messages/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${apiKey}` }
+                });
+                loadDashboard();
+            } catch (e) {
+                console.error('Error deleting message:', e);
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+    </script>
+</body>
+</html>
