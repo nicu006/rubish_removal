@@ -36,8 +36,26 @@ export function initContactForm() {
             cameraInput.click();
         });
         
-        cameraInput.addEventListener('change', (e) => {
-            handleImageFiles(Array.from(e.target.files));
+        cameraInput.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+            
+            // Clone files from camera to prevent invalidation on mobile browsers
+            // when input.value is reset
+            try {
+                const clonedFiles = await Promise.all(files.map(async file => {
+                    const arrayBuffer = await file.arrayBuffer();
+                    return new File([arrayBuffer], file.name || `photo_${Date.now()}.jpg`, { 
+                        type: file.type || 'image/jpeg', 
+                        lastModified: file.lastModified || Date.now() 
+                    });
+                }));
+                handleImageFiles(clonedFiles);
+            } catch (err) {
+                console.error('Error processing camera photo:', err);
+                // Fallback: try with original files
+                handleImageFiles(files);
+            }
             cameraInput.value = ''; // Reset for next capture
         });
     }
