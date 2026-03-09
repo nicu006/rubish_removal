@@ -8,6 +8,7 @@ import { initContactForm } from './contact-form.js';
 import { initFAQ } from './faq.js';
 import { initAnimations } from './animations.js';
 import { showNotification, injectStyles } from './utils.js';
+import { initCustomSelects } from './custom-select.js';
 
 injectStyles();
 
@@ -18,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavScroll();
     initAnimations();
     initFAQ();
+    initCustomSelects();
     initContactForm();
 
     // Track visitor

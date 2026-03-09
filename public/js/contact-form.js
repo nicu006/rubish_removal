@@ -11,6 +11,7 @@ import {
     showNotification,
     MIN_SUBMISSION_INTERVAL
 } from './utils.js';
+import { resetCustomSelects } from './custom-select.js';
 
 export function initContactForm() {
     const contactForm = document.getElementById('contactForm');
@@ -194,6 +195,7 @@ export function initContactForm() {
                 showNotification('Thank you for your message! We will get back to you soon.', 'success');
                 contactForm.reset();
                 clearImageUpload();
+                resetCustomSelects();
                 [nameInput, emailInput, phoneInput, serviceInput, regionInput, messageInput].forEach((input) => {
                     if (input) {
                         input.classList.remove('error', 'valid');
