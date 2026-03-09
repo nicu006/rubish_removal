@@ -1237,11 +1237,13 @@
                 <div class="detail-row">
                     <div class="detail-label">Attached Images (${msg.images.length})</div>
                     <div class="image-gallery">
-                        ${msg.images.map(img => `
-                            <div class="gallery-item" onclick="openLightbox('${API_BASE}/api/uploads/${img}?token=${apiKey}')">
-                                <img src="${API_BASE}/api/uploads/${img}?token=${apiKey}" alt="Attachment" loading="lazy">
-                            </div>
-                        `).join('')}
+                        ${msg.images.map(img => {
+                            const src = typeof img === 'object' ? img.data : `${API_BASE}/api/uploads/${img}?token=${apiKey}`;
+                            return `
+                            <div class="gallery-item" onclick="openLightbox('${src}')">
+                                <img src="${src}" alt="Attachment" loading="lazy">
+                            </div>`;
+                        }).join('')}
                     </div>
                 </div>
             ` : '';

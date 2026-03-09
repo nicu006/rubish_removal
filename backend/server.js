@@ -7,21 +7,7 @@ const nodemailer = require('nodemailer');
 const rateLimit = require('express-rate-limit');
 const multer = require('multer');
 
-// Configure multer for image uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        const uploadDir = path.join(__dirname, 'uploads');
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
-        }
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
+// Configure multer for image uploads (memory storage - no files on disk)
 const fileFilter = (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (allowedTypes.includes(file.mimetype)) {
@@ -32,7 +18,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-    storage: storage,
+    storage: multer.memoryStorage(),
     fileFilter: fileFilter,
     limits: {
         fileSize: 5 * 1024 * 1024, // 5MB max per file
@@ -374,7 +360,7 @@ Reply to: ${email}
         html: emailHtml,
         attachments: attachments.map(file => ({
             filename: file.originalname,
-            path: file.path
+            content: file.buffer
         }))
     };
     
@@ -442,7 +428,7 @@ async function createTable() {
                 service VARCHAR(50) NOT NULL,
                 region VARCHAR(20),
                 message TEXT NOT NULL,
-                images TEXT,
+                images MEDIUMTEXT,
                 read_status BOOLEAN DEFAULT FALSE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_timestamp (timestamp DESC),
@@ -472,8 +458,11 @@ async function createTable() {
         `, [dbConfig.database]);
 
         if (imagesCol.length === 0) {
-            await pool.query(`ALTER TABLE messages ADD COLUMN images TEXT AFTER message`);
+            await pool.query(`ALTER TABLE messages ADD COLUMN images MEDIUMTEXT AFTER message`);
             console.log('✅ Added images column to messages table');
+        } else {
+            // Upgrade existing images column to MEDIUMTEXT for base64 storage
+            await pool.query(`ALTER TABLE messages MODIFY COLUMN images MEDIUMTEXT`);
         }
         
         // Create visitors table for tracking
@@ -577,17 +566,27 @@ app.post('/api/messages', messageCreateLimiter, upload.array('images', 5), async
             message: String(data.message).substring(0, 2000)
         };
 
-        // Store image filenames
-        const imageFilenames = (req.files || []).map(f => f.filename);
+        // Store images as base64 data URIs (no files on disk)
+        const imageDataArray = (req.files || []).map(f => ({
+            name: f.originalname,
+            type: f.mimetype,
+            data: `data:${f.mimetype};base64,${f.buffer.toString('base64')}`
+        }));
 
         const [result] = await pool.query(
             `INSERT INTO messages (timestamp, name, email, phone, service, region, message, images, read_status)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [timestamp, formData.name, formData.email, formData.phone, formData.service, formData.region, formData.message, imageFilenames.length > 0 ? JSON.stringify(imageFilenames) : null, false]
+            [timestamp, formData.name, formData.email, formData.phone, formData.service, formData.region, formData.message, imageDataArray.length > 0 ? JSON.stringify(imageDataArray) : null, false]
         );
 
+        // Build attachments from memory buffers for email
+        const emailAttachments = (req.files || []).map(f => ({
+            originalname: f.originalname,
+            buffer: f.buffer,
+            mimetype: f.mimetype
+        }));
         try {
-            await sendContactEmail(formData, req.files || []);
+            await sendContactEmail(formData, emailAttachments);
         } catch (emailError) {
             console.error('⚠️ Email sending failed, but message saved to database:', emailError.message);
         }
@@ -768,8 +767,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
-// Serve uploaded images (requires API key for security)
-app.use('/api/uploads', requireApiKey, express.static(path.join(__dirname, 'uploads')));
+// Images are stored as base64 in the database - no file serving needed
 
 // Serve frontend files from public folder (AFTER all API routes)
 // This allows mobile devices to access everything from the same origin (no CORS issues)
