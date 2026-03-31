@@ -50,7 +50,7 @@
         padding-right: 20px;
         padding-top: 100px;
         padding-bottom: 2rem;
-        background-image: url('../images/truckmobile.png');
+        background-image: url('../images/walpaper.jpeg');
         background-size: cover;
         background-position: center center;
         background-attachment: scroll;
@@ -256,7 +256,7 @@
         padding-right: 12px;
         padding-top: 80px;
         padding-bottom: 2rem;
-        background-image: url('../images/truckmobile.png');
+        background-image: url('../images/walpaper.jpeg');
         background-size: cover;
         background-position: center center;
         min-height: 100vh;
@@ -400,3 +400,4 @@
         height: 22px;
     }
 }
+

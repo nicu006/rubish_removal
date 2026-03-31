@@ -6,7 +6,7 @@
     align-items: center;
     justify-content: flex-start;
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 50%, #229954 100%);
-    background-image: url('../images/truck.png');
+    background-image: url('../images/walpaper.jpeg');
     background-size: cover !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
@@ -260,3 +260,4 @@
     stroke: currentColor;
     fill: currentColor;
 }
+
