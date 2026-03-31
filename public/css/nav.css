@@ -31,19 +31,6 @@
     text-decoration: none;
 }
 
-.logo-icon {
-    width: 32px;
-    height: 32px;
-    color: var(--primary-color);
-    flex-shrink: 0;
-    display: block;
-}
-
-.logo-icon path {
-    stroke: currentColor;
-    fill: none;
-}
-
 .nav-menu {
     display: flex;
     list-style: none;

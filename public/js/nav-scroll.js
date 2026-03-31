@@ -34,12 +34,19 @@ function onScrollTick() {
         if (scrollY > 300) backToTop.classList.add('visible');
         else backToTop.classList.remove('visible');
     }
+    function hrefMatchesSection(href, sectionId) {
+        if (!href || !sectionId) return false;
+        const hashIdx = href.indexOf('#');
+        const hash = hashIdx >= 0 ? href.slice(hashIdx + 1) : '';
+        return hash === sectionId;
+    }
+
     let found = false;
     for (let i = 0; i < sectionBounds.length; i++) {
         const b = sectionBounds[i];
         if (scrollY > b.top && scrollY <= b.top + b.height) {
             navLinks.forEach((link) => {
-                link.classList.toggle('active', link.getAttribute('href') === '#' + b.id);
+                link.classList.toggle('active', hrefMatchesSection(link.getAttribute('href'), b.id));
             });
             found = true;
             break;

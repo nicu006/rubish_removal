@@ -493,3 +493,32 @@ button:disabled {
 .preview-remove:hover {
     background: #c0392b;
 }
+
+/* Scroll-triggered stagger (section.contact.is-revealed) */
+section.contact .section-header,
+section.contact .contact-info,
+section.contact .contact-form {
+    opacity: 0;
+    transform: translateY(32px);
+    transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+section.contact.is-revealed .section-header {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.04s;
+}
+
+section.contact.is-revealed .contact-info {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.12s;
+}
+
+section.contact.is-revealed .contact-form {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.22s;
+}

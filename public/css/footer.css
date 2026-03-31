@@ -23,6 +23,42 @@
     margin-bottom: 2rem;
 }
 
+/* Scroll-triggered stagger (class .is-revealed on footer from animations.js) */
+.footer .footer-content > .footer-section,
+.footer .footer-bottom {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.footer.is-revealed .footer-content > .footer-section:nth-child(1) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.05s;
+}
+.footer.is-revealed .footer-content > .footer-section:nth-child(2) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.14s;
+}
+.footer.is-revealed .footer-content > .footer-section:nth-child(3) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.23s;
+}
+.footer.is-revealed .footer-content > .footer-section:nth-child(4) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.32s;
+}
+.footer.is-revealed .footer-bottom {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.42s;
+}
+
 .footer-section h4 {
     margin-bottom: 1rem;
     font-size: 1.2rem;
@@ -62,4 +98,12 @@
     padding-top: 2rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.6);
+}
+
+.footer .logo-footer-link {
+    text-decoration: none;
+}
+
+.footer .logo {
+    color: #fff;
 }

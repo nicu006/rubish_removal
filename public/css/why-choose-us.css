@@ -3,6 +3,53 @@
     background: var(--bg-light);
 }
 
+/* Scroll-triggered staggered reveal (class .is-revealed set by animations.js) */
+.why-choose-us .section-header,
+.why-choose-us .feature-card {
+    opacity: 0;
+    transform: translateY(36px);
+    transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.why-choose-us.is-revealed .section-header {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.04s;
+}
+
+.why-choose-us.is-revealed .feature-card:nth-child(1) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.12s;
+}
+.why-choose-us.is-revealed .feature-card:nth-child(2) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.2s;
+}
+.why-choose-us.is-revealed .feature-card:nth-child(3) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.28s;
+}
+.why-choose-us.is-revealed .feature-card:nth-child(4) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.36s;
+}
+.why-choose-us.is-revealed .feature-card:nth-child(5) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.44s;
+}
+.why-choose-us.is-revealed .feature-card:nth-child(6) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.52s;
+}
+
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

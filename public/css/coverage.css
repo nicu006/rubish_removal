@@ -248,3 +248,39 @@
     background: var(--bg-light);
     transform: translateY(-2px);
 }
+
+/* Scroll-triggered stagger (section.coverage.is-revealed) */
+section.coverage .section-header,
+section.coverage .coverage-main,
+section.coverage .areas-container,
+section.coverage .coverage-note {
+    opacity: 0;
+    transform: translateY(36px);
+    transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+section.coverage.is-revealed .section-header {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.04s;
+}
+
+section.coverage.is-revealed .coverage-main {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.12s;
+}
+
+section.coverage.is-revealed .areas-container {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.22s;
+}
+
+section.coverage.is-revealed .coverage-note {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.34s;
+}

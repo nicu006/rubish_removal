@@ -5,8 +5,27 @@
 
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
+}
+
+/* 5 cards: first row 3, second row 2 centred (12-column grid) */
+.services-grid--5 {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    max-width: 1180px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.services-grid--5 .service-card {
+    grid-column: span 4;
+}
+
+.services-grid--5 .service-card:nth-child(4) {
+    grid-column: 3 / span 4;
+}
+
+.services-grid--5 .service-card:nth-child(5) {
+    grid-column: 7 / span 4;
 }
 
 .service-card {
@@ -65,6 +84,15 @@
 .service-icon line {
     stroke: currentColor;
     fill: none;
+}
+
+/* PNG assets often have padding; size up so visual weight matches stroke SVGs */
+.service-icon--img {
+    width: 128px;
+    height: 128px;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: center;
 }
 
 .service-badge {
@@ -141,4 +169,46 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+}
+
+/* Scroll-triggered stagger (class .is-revealed on section.services from animations.js) */
+section.services .section-header,
+section.services .services-grid > .service-card {
+    opacity: 0;
+    transform: translateY(36px);
+    transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+section.services.is-revealed .section-header {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.04s;
+}
+
+section.services.is-revealed .services-grid > .service-card:nth-child(1) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.12s;
+}
+section.services.is-revealed .services-grid > .service-card:nth-child(2) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.2s;
+}
+section.services.is-revealed .services-grid > .service-card:nth-child(3) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.28s;
+}
+section.services.is-revealed .services-grid > .service-card:nth-child(4) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.36s;
+}
+section.services.is-revealed .services-grid > .service-card:nth-child(5) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.44s;
 }

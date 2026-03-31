@@ -56,17 +56,6 @@
             margin-bottom: 3rem;
         }
 
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
         .logo-text {
             font-size: 1.4rem;
             font-weight: 700;
@@ -432,6 +421,7 @@
         .service-badge.residential { background: rgba(52, 152, 219, 0.2); color: var(--info); }
         .service-badge.commercial { background: rgba(155, 89, 182, 0.2); color: #9b59b6; }
         .service-badge.bulk { background: rgba(243, 156, 18, 0.2); color: var(--warning); }
+        .service-badge.garden { background: rgba(39, 174, 96, 0.2); color: #27ae60; }
         .service-badge.recycling { background: rgba(46, 204, 113, 0.2); color: var(--success); }
 
         .status-dot {
@@ -793,7 +783,6 @@
     <div class="login-screen" id="loginScreen">
         <div class="login-card">
             <div class="logo" style="justify-content: center; margin-bottom: 2rem;">
-                <div class="logo-icon">�</div>
                 <span class="logo-text">Easy<span style="color: var(--primary);">Waste</span></span>
             </div>
             <h2>Dashboard Login</h2>
@@ -814,7 +803,6 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
-                <div class="logo-icon">�</div>
                 <span class="logo-text">Easy<span style="color: var(--primary);">Waste</span></span>
             </div>
             <nav>
@@ -1091,6 +1079,7 @@
                 residential: '#3498db',
                 commercial: '#9b59b6',
                 bulk: '#f39c12',
+                garden: '#27ae60',
                 recycling: '#2ecc71'
             };
             
@@ -1098,6 +1087,7 @@
                 residential: 'Residential',
                 commercial: 'Commercial',
                 bulk: 'Bulk Removal',
+                garden: 'Garden & Outdoor',
                 recycling: 'Recycling'
             };
             

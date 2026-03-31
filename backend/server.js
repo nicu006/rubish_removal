@@ -44,7 +44,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Allowed service values (strict validation)
-const ALLOWED_SERVICES = ['residential', 'commercial', 'bulk', 'recycling'];
+const ALLOWED_SERVICES = ['residential', 'commercial', 'bulk', 'garden', 'recycling'];
 
 // CORS: use CORS_ORIGIN in production (e.g. https://yourdomain.com), '*' for development
 const corsOrigin = process.env.CORS_ORIGIN;
@@ -173,6 +173,7 @@ async function sendContactEmail(formData, attachments = []) {
         residential: 'Residential',
         commercial: 'Commercial',
         bulk: 'Bulk Removal',
+        garden: 'Garden & Outdoor',
         recycling: 'Recycling'
     };
     
@@ -180,6 +181,7 @@ async function sendContactEmail(formData, attachments = []) {
         residential: '🏠',
         commercial: '🏢',
         bulk: '📦',
+        garden: '🌿',
         recycling: '♻️'
     };
     

@@ -199,6 +199,10 @@
     box-shadow: 0 4px 20px rgba(46, 204, 113, 0.3), 0 2px 8px rgba(46, 204, 113, 0.2);
 }
 
+.pricing-card .btn-primary::after {
+    display: none;
+}
+
 .pricing-card .btn-primary:hover {
     background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
     color: white;
@@ -279,4 +283,33 @@
     .pricing-card-large .contact-text {
         font-size: 2rem;
     }
+}
+
+/* Scroll-triggered stagger (section.pricing.is-revealed from animations.js) */
+section.pricing .section-header,
+section.pricing .pricing-single,
+section.pricing .pricing-note {
+    opacity: 0;
+    transform: translateY(36px);
+    transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+section.pricing.is-revealed .section-header {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.04s;
+}
+
+section.pricing.is-revealed .pricing-single {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.14s;
+}
+
+section.pricing.is-revealed .pricing-note {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.28s;
 }

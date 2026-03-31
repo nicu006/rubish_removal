@@ -74,3 +74,50 @@
     line-height: 1.8;
     margin: 0;
 }
+
+/* Scroll-triggered stagger (section.faq.is-revealed) */
+section.faq .section-header,
+section.faq .faq-container .faq-item {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+        opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+section.faq.is-revealed .section-header {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.04s;
+}
+
+section.faq.is-revealed .faq-container .faq-item:nth-child(1) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.1s;
+}
+section.faq.is-revealed .faq-container .faq-item:nth-child(2) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.16s;
+}
+section.faq.is-revealed .faq-container .faq-item:nth-child(3) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.22s;
+}
+section.faq.is-revealed .faq-container .faq-item:nth-child(4) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.28s;
+}
+section.faq.is-revealed .faq-container .faq-item:nth-child(5) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.34s;
+}
+section.faq.is-revealed .faq-container .faq-item:nth-child(6) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.4s;
+}

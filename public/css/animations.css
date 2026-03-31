@@ -9,3 +9,58 @@
         transform: translateY(0);
     }
 }
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-content .hero-title,
+    .hero-content .hero-subtitle,
+    .hero-content .hero-buttons,
+    .hero-features .feature-item {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .why-choose-us .section-header,
+    .why-choose-us .feature-card {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+
+    .footer .footer-content > .footer-section,
+    .footer .footer-bottom {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+
+    section.services .section-header,
+    section.services .services-grid > .service-card {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+
+    .services-grid--5 .service-card {
+        grid-column: auto !important;
+    }
+
+    section.pricing .section-header,
+    section.pricing .pricing-single,
+    section.pricing .pricing-note,
+    section.coverage .section-header,
+    section.coverage .coverage-main,
+    section.coverage .areas-container,
+    section.coverage .coverage-note,
+    section.about .about-text,
+    section.about .about-image,
+    section.faq .section-header,
+    section.faq .faq-container .faq-item,
+    section.contact .section-header,
+    section.contact .contact-info,
+    section.contact .contact-form {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+}

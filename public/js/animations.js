@@ -31,6 +31,21 @@ export function animateCounter(element, target, duration = 2000) {
 
 const observerOptions = { threshold: 0.01, rootMargin: '0px' };
 
+const revealSectionOptions = { threshold: 0.08, rootMargin: '0px 0px -24px 0px' };
+
+function observeSectionReveal(selector) {
+    const el = document.querySelector(selector);
+    if (!el) return;
+    const obs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            el.classList.add('is-revealed');
+            obs.unobserve(el);
+        });
+    }, revealSectionOptions);
+    obs.observe(el);
+}
+
 export function initAnimations() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -50,13 +65,30 @@ export function initAnimations() {
         });
     }, observerOptions);
 
-    const animatedElements = document.querySelectorAll('.service-card, .feature-card, .pricing-card, section');
     const statNumbers = document.querySelectorAll('.stat-number');
-    animatedElements.forEach((el) => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-        observer.observe(el);
-    });
     statNumbers.forEach((stat) => observer.observe(stat));
+
+    observeSectionReveal('section.pricing');
+    observeSectionReveal('section.coverage');
+    observeSectionReveal('section.about');
+    observeSectionReveal('section.faq');
+    observeSectionReveal('section.contact');
+
+    observeSectionReveal('section.services');
+    observeSectionReveal('.why-choose-us');
+
+    const footerEl = document.querySelector('footer.footer');
+    if (footerEl) {
+        const footerObserver = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    footerEl.classList.add('is-revealed');
+                    footerObserver.unobserve(footerEl);
+                });
+            },
+            { threshold: 0.06, rootMargin: '0px 0px -16px 0px' }
+        );
+        footerObserver.observe(footerEl);
+    }
 }
