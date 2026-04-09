@@ -62,11 +62,47 @@ function scrollThrottle() {
     }
 }
 
+function initServicesDropdown() {
+    const dropdowns = document.querySelectorAll('.nav-item--dropdown');
+    if (!dropdowns.length) return;
+
+    function closeAll(except) {
+        dropdowns.forEach((item) => {
+            if (item === except) return;
+            item.classList.remove('is-open');
+            const t = item.querySelector('.nav-dropdown-toggle');
+            if (t) t.setAttribute('aria-expanded', 'false');
+        });
+    }
+
+    dropdowns.forEach((item) => {
+        const toggle = item.querySelector('.nav-dropdown-toggle');
+        if (!toggle) return;
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const open = !item.classList.contains('is-open');
+            closeAll(open ? item : null);
+            item.classList.toggle('is-open', open);
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+    });
+
+    document.addEventListener('click', () => {
+        closeAll(null);
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeAll(null);
+    });
+}
+
 export function initNavScroll() {
     const hamburger = document.getElementById('hamburger');
     const navMenu = document.getElementById('navMenu');
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('section[id]');
+
+    initServicesDropdown();
 
     if (hamburger && navMenu) {
         hamburger.addEventListener('click', () => {
@@ -74,11 +110,15 @@ export function initNavScroll() {
             hamburger.classList.toggle('active');
         });
     }
+    function closeMobileMenu() {
+        if (navMenu) navMenu.classList.remove('active');
+        if (hamburger) hamburger.classList.remove('active');
+    }
     navLinks.forEach((link) => {
-        link.addEventListener('click', () => {
-            if (navMenu) navMenu.classList.remove('active');
-            if (hamburger) hamburger.classList.remove('active');
-        });
+        link.addEventListener('click', closeMobileMenu);
+    });
+    document.querySelectorAll('.nav-sublink').forEach((link) => {
+        link.addEventListener('click', closeMobileMenu);
     });
 
     function updateSectionBounds() {

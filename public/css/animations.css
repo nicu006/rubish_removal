@@ -10,6 +10,22 @@
     }
 }
 
+/* Generic reveal utility (used on skip-hire page and reusable elsewhere) */
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+        opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
     .hero-content .hero-title,
     .hero-content .hero-subtitle,
@@ -50,7 +66,6 @@
     section.pricing .pricing-note,
     section.coverage .section-header,
     section.coverage .coverage-main,
-    section.coverage .areas-container,
     section.coverage .coverage-note,
     section.about .about-text,
     section.about .about-image,
@@ -58,7 +73,8 @@
     section.faq .faq-container .faq-item,
     section.contact .section-header,
     section.contact .contact-info,
-    section.contact .contact-form {
+    section.contact .contact-form,
+    .reveal-on-scroll {
         opacity: 1 !important;
         transform: none !important;
         transition: none !important;

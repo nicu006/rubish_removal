@@ -786,15 +786,15 @@
                 <span class="logo-text">Easy<span style="color: var(--primary);">Waste</span></span>
             </div>
             <h2>Dashboard Login</h2>
-            <p>Enter your API key to access the dashboard</p>
-            <input type="password" id="loginApiKey" placeholder="Enter API Key" autocomplete="off">
+            <p>Enter your password to access the dashboard</p>
+            <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
             <button class="btn btn-primary" id="loginBtn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
                     <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
                 </svg>
                 Login
             </button>
-            <p class="error-msg" id="loginError">Invalid API key. Please try again.</p>
+            <p class="error-msg" id="loginError">Invalid password. Please try again.</p>
         </div>
     </div>
 
@@ -942,13 +942,14 @@
 
     <script>
         const API_BASE = window.location.origin;
-        let apiKey = localStorage.getItem('easywaste_api_key') || '';
+        const STORAGE_KEY = 'easywaste_dashboard_password';
+        let sessionPassword = localStorage.getItem(STORAGE_KEY) || '';
 
         // DOM Elements
         const loginScreen = document.getElementById('loginScreen');
         const dashboard = document.getElementById('dashboard');
         const loginBtn = document.getElementById('loginBtn');
-        const loginApiKey = document.getElementById('loginApiKey');
+        const loginPassword = document.getElementById('loginPassword');
         const loginError = document.getElementById('loginError');
         const logoutBtn = document.getElementById('logoutBtn');
         const refreshBtn = document.getElementById('refreshBtn');
@@ -976,26 +977,27 @@
         });
 
         // Check if already logged in
-        if (apiKey) {
+        if (sessionPassword) {
             showDashboard();
         }
 
         // Login
         loginBtn.addEventListener('click', async () => {
-            const key = loginApiKey.value.trim();
-            if (!key) return;
+            const pwd = loginPassword.value.trim();
+            if (!pwd) return;
 
             try {
                 const res = await fetch(`${API_BASE}/api/dashboard`, {
-                    headers: { 'Authorization': `Bearer ${key}` }
+                    headers: { 'Authorization': `Bearer ${pwd}` }
                 });
 
                 if (res.ok) {
-                    apiKey = key;
-                    localStorage.setItem('easywaste_api_key', key);
+                    sessionPassword = pwd;
+                    localStorage.setItem(STORAGE_KEY, pwd);
                     loginError.style.display = 'none';
                     showDashboard();
                 } else {
+                    loginError.textContent = 'Invalid password. Please try again.';
                     loginError.style.display = 'block';
                 }
             } catch (e) {
@@ -1004,17 +1006,17 @@
             }
         });
 
-        loginApiKey.addEventListener('keypress', (e) => {
+        loginPassword.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') loginBtn.click();
         });
 
         // Logout
         logoutBtn.addEventListener('click', () => {
-            apiKey = '';
-            localStorage.removeItem('easywaste_api_key');
+            sessionPassword = '';
+            localStorage.removeItem(STORAGE_KEY);
             dashboard.style.display = 'none';
             loginScreen.style.display = 'flex';
-            loginApiKey.value = '';
+            loginPassword.value = '';
         });
 
         // Refresh
@@ -1040,7 +1042,7 @@
         async function loadDashboard() {
             try {
                 const res = await fetch(`${API_BASE}/api/dashboard`, {
-                    headers: { 'Authorization': `Bearer ${apiKey}` }
+                    headers: { 'Authorization': `Bearer ${sessionPassword}` }
                 });
 
                 if (res.status === 401) {
@@ -1228,7 +1230,7 @@
                     <div class="detail-label">Attached Images (${msg.images.length})</div>
                     <div class="image-gallery">
                         ${msg.images.map(img => {
-                            const src = typeof img === 'object' ? img.data : `${API_BASE}/api/uploads/${img}?token=${apiKey}`;
+                            const src = typeof img === 'object' ? img.data : `${API_BASE}/api/uploads/${img}?token=${encodeURIComponent(sessionPassword)}`;
                             return `
                             <div class="gallery-item" onclick="openLightbox('${src}')">
                                 <img src="${src}" alt="Attachment" loading="lazy">
@@ -1287,7 +1289,7 @@
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`
+                        'Authorization': `Bearer ${sessionPassword}`
                     },
                     body: JSON.stringify({ read: !currentRead })
                 });
@@ -1303,7 +1305,7 @@
             try {
                 await fetch(`${API_BASE}/api/messages/${id}`, {
                     method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${apiKey}` }
+                    headers: { 'Authorization': `Bearer ${sessionPassword}` }
                 });
                 loadDashboard();
             } catch (e) {

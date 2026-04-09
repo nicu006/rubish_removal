@@ -7,7 +7,7 @@
     .nav-menu {
         position: fixed;
         left: -100%;
-        top: 70px;
+        top: 64px;
         flex-direction: column;
         background: var(--bg-white);
         width: 100%;
@@ -24,6 +24,37 @@
 
     .nav-menu li {
         margin: 1rem 0;
+    }
+
+    .nav-item--dropdown {
+        width: 100%;
+    }
+
+    .nav-dropdown-toggle {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .nav-submenu {
+        position: static;
+        box-shadow: none;
+        border: none;
+        background: rgba(46, 204, 113, 0.08);
+        border-radius: 8px;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        transition: max-height 0.35s ease;
+        padding: 0;
+        margin: 0 1rem;
+        min-width: 0;
+    }
+
+    .nav-item--dropdown.is-open .nav-submenu {
+        max-height: 320px;
+        padding: 0.35rem 0;
     }
 
     .hero-title {
@@ -50,7 +81,7 @@
         padding-right: 20px;
         padding-top: 100px;
         padding-bottom: 2rem;
-        background-image: url('../images/walpaper.jpeg');
+        background-image: url('../images/HeroBack.png');
         background-size: cover;
         background-position: center center;
         background-attachment: scroll;
@@ -60,14 +91,14 @@
     }
     
     .hero::before {
-        background: 
-            linear-gradient(135deg, rgba(46, 204, 113, 0.3) 0%, rgba(39, 174, 96, 0.3) 50%, rgba(34, 153, 84, 0.3) 100%);
+        background: none;
+        opacity: 0;
     }
     
     .hero-overlay {
         background: rgba(0, 0, 0, 0.4);
     }
-    
+
     .hero-content {
         padding: 0;
         display: flex;
@@ -244,6 +275,10 @@
     .coverage-note {
         padding: 1.5rem;
     }
+
+    .coverage-map-embed {
+        min-height: 240px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -256,7 +291,7 @@
         padding-right: 12px;
         padding-top: 80px;
         padding-bottom: 2rem;
-        background-image: url('../images/walpaper.jpeg');
+        background-image: url('../images/HeroBack.png');
         background-size: cover;
         background-position: center center;
         min-height: 100vh;
@@ -266,14 +301,14 @@
     }
     
     .hero::before {
-        background: 
-            linear-gradient(135deg, rgba(46, 204, 113, 0.35) 0%, rgba(39, 174, 96, 0.35) 50%, rgba(34, 153, 84, 0.35) 100%);
+        background: none;
+        opacity: 0;
     }
     
     .hero-overlay {
         background: rgba(0, 0, 0, 0.45);
     }
-    
+
     .hero-content {
         padding: 0;
         max-width: 100%;
@@ -391,7 +426,7 @@
     .whatsapp-btn {
         width: 45px;
         height: 45px;
-        bottom: 6.5rem;
+        bottom: 1.5rem;
         right: 1.5rem;
     }
 

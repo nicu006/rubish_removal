@@ -32,6 +32,7 @@ export function animateCounter(element, target, duration = 2000) {
 const observerOptions = { threshold: 0.01, rootMargin: '0px' };
 
 const revealSectionOptions = { threshold: 0.08, rootMargin: '0px 0px -24px 0px' };
+const genericRevealOptions = { threshold: 0.1, rootMargin: '0px 0px -8% 0px' };
 
 function observeSectionReveal(selector) {
     const el = document.querySelector(selector);
@@ -44,6 +45,24 @@ function observeSectionReveal(selector) {
         });
     }, revealSectionOptions);
     obs.observe(el);
+}
+
+function initGenericReveal() {
+    const revealEls = document.querySelectorAll('.reveal-on-scroll');
+    if (!revealEls.length) return;
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) {
+        revealEls.forEach((el) => el.classList.add('is-revealed'));
+        return;
+    }
+    const obs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-revealed');
+            obs.unobserve(entry.target);
+        });
+    }, genericRevealOptions);
+    revealEls.forEach((el) => obs.observe(el));
 }
 
 export function initAnimations() {
@@ -67,6 +86,7 @@ export function initAnimations() {
 
     const statNumbers = document.querySelectorAll('.stat-number');
     statNumbers.forEach((stat) => observer.observe(stat));
+    initGenericReveal();
 
     observeSectionReveal('section.pricing');
     observeSectionReveal('section.coverage');

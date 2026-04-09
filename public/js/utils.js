@@ -55,7 +55,7 @@ export function validateFormData(formData) {
         errors.push({ field: 'service', message: 'Please select a valid service' });
     }
     if (!formData.region || formData.region.trim() === '') {
-        errors.push({ field: 'region', message: 'Please select a Dublin region' });
+        errors.push({ field: 'region', message: 'Please select your county' });
     }
     if (!formData.message || formData.message.trim().length < 10) {
         errors.push({ field: 'message', message: 'Message must be at least 10 characters' });

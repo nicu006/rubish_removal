@@ -9,6 +9,7 @@ import { initFAQ } from './faq.js';
 import { initAnimations } from './animations.js';
 import { showNotification, injectStyles } from './utils.js';
 import { initCustomSelects } from './custom-select.js';
+import { initSkipHireCarouselDrag } from './skip-hire-carousel.js';
 
 injectStyles();
 
@@ -21,6 +22,39 @@ document.addEventListener('DOMContentLoaded', () => {
     initFAQ();
     initCustomSelects();
     initContactForm();
+    initSkipHireCarouselDrag();
+
+    // Hero background video: stop at 8s and keep final frame static.
+    const heroBackgroundVideo = document.getElementById('heroBackgroundVideo');
+    if (heroBackgroundVideo) {
+        const stopAtSeconds = 8;
+        let didStopAtTarget = false;
+
+        const freezeAtTarget = () => {
+            if (didStopAtTarget) return;
+            didStopAtTarget = true;
+            heroBackgroundVideo.currentTime = stopAtSeconds;
+            heroBackgroundVideo.pause();
+        };
+
+        heroBackgroundVideo.addEventListener('loadedmetadata', () => {
+            heroBackgroundVideo.currentTime = 0;
+            const playPromise = heroBackgroundVideo.play();
+            if (playPromise && typeof playPromise.catch === 'function') {
+                playPromise.catch(() => { /* silent fail */ });
+            }
+        });
+
+        heroBackgroundVideo.addEventListener('timeupdate', () => {
+            if (heroBackgroundVideo.currentTime >= stopAtSeconds) {
+                freezeAtTarget();
+            }
+        });
+
+        heroBackgroundVideo.addEventListener('ended', () => {
+            freezeAtTarget();
+        });
+    }
 
     // Track visitor
     const visitorUrl = API_BASE_URL.startsWith('/')

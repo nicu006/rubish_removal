@@ -107,3 +107,9 @@
 .footer .logo {
     color: #fff;
 }
+
+.footer .logo-image {
+    width: min(250px, 85vw);
+    height: 60px;
+    object-fit: contain;
+}

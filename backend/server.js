@@ -97,15 +97,10 @@ const messageCreateLimiter = rateLimit({
     legacyHeaders: false
 });
 
-// Auth for protected routes (GET/PATCH/DELETE messages). Requires API_SECRET_KEY in .env; send header Authorization: Bearer <key> or X-API-Key: <key> or query ?token=<key>
+// Auth for protected routes (GET/PATCH/DELETE messages, dashboard). Default password: admin123. Override with DASHBOARD_PASSWORD in .env. Send Authorization: Bearer <password> or X-API-Key or query ?token=
 function requireApiKey(req, res, next) {
-    const secret = process.env.API_SECRET_KEY;
-    if (!secret || secret.trim() === '') {
-        return res.status(403).json({
-            error: 'Forbidden',
-            message: 'Access to messages is disabled. Set API_SECRET_KEY in backend/.env to enable and use Authorization: Bearer <key> or X-API-Key: <key>.'
-        });
-    }
+    const raw = process.env.DASHBOARD_PASSWORD;
+    const secret = raw === undefined || raw === '' ? 'admin123' : String(raw).trim();
     const authHeader = req.headers.authorization;
     const apiKeyHeader = req.headers['x-api-key'];
     const queryToken = req.query.token; // Allow token in query string for image loading
@@ -497,7 +492,7 @@ function parseId(id) {
     return Number.isInteger(n) && n > 0 ? n : null;
 }
 
-// GET all messages (with pagination: ?page=1&limit=50) - requires API key if API_SECRET_KEY is set
+// GET all messages (with pagination: ?page=1&limit=50) - requires dashboard password
 app.get('/api/messages', requireApiKey, async (req, res) => {
     try {
         const page = Math.max(1, parseInt(req.query.page, 10) || 1);
@@ -603,7 +598,7 @@ app.post('/api/messages', messageCreateLimiter, upload.array('images', 5), async
     }
 });
 
-// PATCH update message read status - requires API key if API_SECRET_KEY is set
+// PATCH update message read status - requires dashboard password
 app.patch('/api/messages/:id', requireApiKey, async (req, res) => {
     try {
         const id = parseId(req.params.id);
@@ -687,7 +682,7 @@ app.post('/api/visitors', async (req, res) => {
     }
 });
 
-// GET dashboard stats - requires API key
+// GET dashboard stats - requires dashboard password
 app.get('/api/dashboard', requireApiKey, async (req, res) => {
     try {
         // Total visitors

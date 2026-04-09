@@ -6,13 +6,14 @@
     <title>Service Areas - EasyWaste Removal</title>
     
     <!-- Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com; frame-src 'self' https://www.google.com; connect-src 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://tile.openstreetmap.org https://*.openstreetmap.org; frame-src 'self' https://www.google.com https://www.openstreetmap.org; connect-src 'self';">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
     
-    <link rel="stylesheet" href="styles.css?v=13">
+    <link rel="stylesheet" href="styles.css?v=21">
+    <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -24,11 +25,28 @@
         <div class="container">
             <div class="nav-wrapper">
                 <a href="index.html#home" class="logo">
-                    <span class="logo-text">Easy<span style="color: var(--primary-color);">Waste</span></span>
+                    <img src="images/lOGO2.png" alt="Easy Waste" class="logo-image">
+                    <span class="logo-wordmark" aria-hidden="true">
+                        <span class="logo-main">
+                            <span>EASY</span>
+                            <span>WASTE</span>
+                        </span>
+                        <span class="logo-removal">REMOVAL</span>
+                    </span>
                 </a>
                 <ul class="nav-menu" id="navMenu">
                     <li><a href="index.html#home" class="nav-link">Home</a></li>
-                    <li><a href="services.html#services" class="nav-link">Services</a></li>
+                    <li class="nav-item nav-item--dropdown">
+                        <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="nav-services-submenu">
+                            Services
+                            <span class="nav-dropdown-chevron" aria-hidden="true"></span>
+                        </button>
+                        <ul class="nav-submenu" id="nav-services-submenu" role="menu">
+                            <li role="none"><a role="menuitem" href="bag-skip-hire.html" class="nav-sublink">Bag skip hire</a></li>
+                            <li role="none"><a role="menuitem" href="skip-hire.html" class="nav-sublink">Skip hire</a></li>
+                            <li role="none"><a role="menuitem" href="contact.html?interest=man-with-the-van#contact" class="nav-sublink">Man with the van</a></li>
+                        </ul>
+                    </li>
                     <li><a href="pricing.html#pricing" class="nav-link">Pricing</a></li>
                     <li><a href="#coverage" class="nav-link">Coverage</a></li>
                     <li><a href="about.html#about" class="nav-link">About</a></li>
@@ -49,7 +67,7 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Service Areas</h2>
-                <p class="section-subtitle">We provide rubbish removal services throughout Dublin City</p>
+                <p class="section-subtitle">We provide rubbish removal services across our main counties</p>
             </div>
             <div class="coverage-content">
                 <div class="coverage-main">
@@ -57,40 +75,60 @@
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/>
                     </svg>
-                    <h3>Dublin City</h3>
-                    <p>EasyWaste offers comprehensive waste removal services across Dublin City. Our fleet of vehicles ensures we can reach you quickly, no matter where you're located in the city.</p>
-                </div>
-                
-                <div class="areas-container">
-                    <div class="area-category large">
-                        <div class="category-header">
-                            <h4><svg class="inline-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/></svg> Dublin City</h4>
-                            <span class="area-count">22 Areas</span>
+                    <h3>Coverage Areas</h3>
+                    <p class="coverage-intro">We operate in these <strong>five counties</strong> only. Each county is <strong>filled with its own colour</strong> (like a classic county map); boundaries follow official outline data. Click a card to zoom.</p>
+                    <div class="coverage-map-section">
+                        <div class="coverage-map-embed">
+                            <div id="coverageMap" class="coverage-map-leaflet" role="img" aria-label="Interactive map: five counties with distinct colours and a name label on each area"></div>
                         </div>
-                        <div class="areas-list columns-3">
-                            <div class="area-item">Dublin 1</div>
-                            <div class="area-item">Dublin 2</div>
-                            <div class="area-item">Dublin 3</div>
-                            <div class="area-item">Dublin 4</div>
-                            <div class="area-item">Dublin 5</div>
-                            <div class="area-item">Dublin 6</div>
-                            <div class="area-item">Dublin 6W</div>
-                            <div class="area-item">Dublin 7</div>
-                            <div class="area-item">Dublin 8</div>
-                            <div class="area-item">Dublin 9</div>
-                            <div class="area-item">Dublin 10</div>
-                            <div class="area-item">Dublin 11</div>
-                            <div class="area-item">Dublin 12</div>
-                            <div class="area-item">Dublin 13</div>
-                            <div class="area-item">Dublin 14</div>
-                            <div class="area-item">Dublin 15</div>
-                            <div class="area-item">Dublin 16</div>
-                            <div class="area-item">Dublin 17</div>
-                            <div class="area-item">Dublin 18</div>
-                            <div class="area-item">Dublin 20</div>
-                            <div class="area-item">Dublin 22</div>
-                            <div class="area-item">Dublin 24</div>
-                        </div>
+                        <p class="coverage-map-credit">Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors</p>
+                        <ul class="coverage-county-grid" aria-label="Counties we cover">
+                            <li class="coverage-county-item">
+                                <button type="button" class="coverage-county-card is-selected" data-county="Dublin" aria-pressed="true" aria-label="Show Dublin on map">
+                                    <span class="coverage-county-card-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/></svg>
+                                    </span>
+                                    <span class="coverage-county-card-name">Dublin</span>
+                                    <span class="coverage-county-card-hint">Full county</span>
+                                </button>
+                            </li>
+                            <li class="coverage-county-item">
+                                <button type="button" class="coverage-county-card" data-county="Meath" aria-pressed="false" aria-label="Show Meath on map">
+                                    <span class="coverage-county-card-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/></svg>
+                                    </span>
+                                    <span class="coverage-county-card-name">Meath</span>
+                                    <span class="coverage-county-card-hint">Full county</span>
+                                </button>
+                            </li>
+                            <li class="coverage-county-item">
+                                <button type="button" class="coverage-county-card" data-county="Louth" aria-pressed="false" aria-label="Show Louth on map">
+                                    <span class="coverage-county-card-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/></svg>
+                                    </span>
+                                    <span class="coverage-county-card-name">Louth</span>
+                                    <span class="coverage-county-card-hint">Full county</span>
+                                </button>
+                            </li>
+                            <li class="coverage-county-item">
+                                <button type="button" class="coverage-county-card" data-county="Kildare" aria-pressed="false" aria-label="Show Kildare on map">
+                                    <span class="coverage-county-card-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/></svg>
+                                    </span>
+                                    <span class="coverage-county-card-name">Kildare</span>
+                                    <span class="coverage-county-card-hint">Full county</span>
+                                </button>
+                            </li>
+                            <li class="coverage-county-item">
+                                <button type="button" class="coverage-county-card" data-county="Wicklow" aria-pressed="false" aria-label="Show Wicklow on map">
+                                    <span class="coverage-county-card-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/></svg>
+                                    </span>
+                                    <span class="coverage-county-card-name">Wicklow</span>
+                                    <span class="coverage-county-card-hint">Full county</span>
+                                </button>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="coverage-note">
@@ -107,7 +145,7 @@
                 <div class="footer-section">
                     <div class="logo">
                         <a href="index.html#home" class="logo-footer-link">
-                            <span class="logo-text">Easy<span style="color: var(--primary-color);">Waste</span></span>
+                            <img src="images/lOGO2.png" alt="Easy Waste" class="logo-image">
                         </a>
                     </div>
                     <p>Professional rubbish removal services you can trust. Fast, reliable, and eco-friendly.</p>
@@ -127,10 +165,10 @@
                 <div class="footer-section">
                     <h4>Services</h4>
                     <ul>
-                        <li><a href="services.html#services">Residential Removal</a></li>
-                        <li><a href="services.html#services">Commercial Removal</a></li>
-                        <li><a href="services.html#services">Bulk Collection</a></li>
-                        <li><a href="services.html#services">Recycling Services</a></li>
+                        <li><a href="bag-skip-hire.html">Bag skip hire</a></li>
+                        <li><a href="skip-hire.html">Skip hire</a></li>
+                        <li><a href="contact.html?interest=man-with-the-van#contact">Man with the van</a></li>
+                        <li><a href="services.html#services">All services</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -158,12 +196,9 @@
         </svg>
     </a>
 
-    <button class="back-to-top" id="backToTop" aria-label="Back to top">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 15l-6-6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-    </button>
 
+    <script src="vendor/leaflet/leaflet.js" defer></script>
+    <script src="js/coverage-county-map.js" defer></script>
     <script type="module" src="js/main.js"></script>
 </body>
 </html>

@@ -4,31 +4,135 @@
     top: 0;
     width: 100%;
     background: rgba(255, 255, 255, 0.98);
-    box-shadow: var(--shadow);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     z-index: 1000;
-    transition: box-shadow 0.15s ease;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
     transform: translateZ(0);
 }
 
 .navbar.scrolled {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+    border-bottom-color: rgba(0, 0, 0, 0.1);
 }
 
 .nav-wrapper {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 0;
+    padding: 0.55rem 0;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: flex-start;
+    gap: 0;
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--primary-color);
     text-decoration: none;
+    line-height: 1;
+}
+
+.logo-image {
+    display: block;
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    object-position: center;
+    margin: 0;
+    transform: none;
+}
+
+.logo-wordmark {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 198px;
+    transform: translateY(2px);
+    margin-left: -6px;
+    padding-left: 0;
+}
+
+.logo-main {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: 0.06em;
+    font-weight: 800;
+    font-size: 1.22rem;
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+    -webkit-text-stroke: 1.6px rgba(8, 35, 18, 0.92);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
+    text-transform: uppercase;
+}
+
+.logo-removal {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -11px);
+    font-size: 0.86rem;
+    letter-spacing: 0.26em;
+    font-weight: 800;
+    color: #2fb55f;
+    -webkit-text-fill-color: #2fb55f;
+    -webkit-text-stroke: 1.2px rgba(8, 35, 18, 0.9);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
+    white-space: nowrap;
+    animation: logoRemovalDrop 1.45s cubic-bezier(0.19, 0.96, 0.28, 1) 0.22s both;
+    will-change: transform, opacity, filter;
+}
+
+@keyframes logoRemovalDrop {
+    from {
+        opacity: 0;
+        filter: blur(2px);
+        transform: translate(-50%, -24px) scale(0.98);
+    }
+    65% {
+        opacity: 1;
+        filter: blur(0);
+        transform: translate(-50%, 2px) scale(1);
+    }
+    to {
+        opacity: 1;
+        filter: blur(0);
+        transform: translate(-50%, 0);
+    }
+}
+
+@media (max-width: 1100px) {
+    .logo-main {
+        font-size: 1.04rem;
+        -webkit-text-stroke: 2.4px #000;
+    }
+
+    .logo-removal {
+        font-size: 0.76rem;
+        letter-spacing: 0.2em;
+        -webkit-text-stroke: 2.4px #000;
+    }
+
+    .logo-wordmark {
+        min-width: 190px;
+    }
+}
+
+@media (max-width: 880px) {
+    .logo-wordmark {
+        display: none;
+    }
+
+    .logo-image {
+        width: 52px;
+        height: 52px;
+    }
 }
 
 .nav-menu {
@@ -42,11 +146,12 @@
     text-decoration: none;
     color: var(--text-dark);
     font-weight: 500;
+    font-size: 0.95rem;
     transition: color 0.3s ease;
     position: relative;
-    padding: 0.5rem 0.8rem;
+    padding: 0.35rem 0.7rem;
     display: block;
-    min-height: 44px;
+    min-height: 40px;
     display: flex;
     align-items: center;
     touch-action: manipulation;
@@ -96,6 +201,99 @@
     height: 3px;
     background: var(--text-dark);
     transition: all 0.3s ease;
+}
+
+/* Services dropdown */
+.nav-item--dropdown {
+    position: relative;
+}
+
+.nav-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.35rem 0.7rem;
+    min-height: 40px;
+    background: none;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    touch-action: manipulation;
+}
+
+.nav-dropdown-toggle:hover {
+    color: var(--primary-color);
+}
+
+.nav-dropdown-chevron {
+    display: inline-block;
+    width: 0.5em;
+    height: 0.5em;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    margin-bottom: 0.15em;
+    transition: transform 0.2s ease;
+    opacity: 0.85;
+}
+
+.nav-item--dropdown.is-open .nav-dropdown-chevron {
+    transform: rotate(225deg);
+    margin-bottom: -0.05em;
+}
+
+.nav-submenu {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    min-width: 220px;
+    background: var(--bg-white);
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0.2s;
+    z-index: 1001;
+}
+
+.nav-sublink {
+    display: block;
+    padding: 0.65rem 1.25rem;
+    color: var(--text-dark);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition:
+        background 0.2s,
+        color 0.2s;
+}
+
+.nav-sublink:hover {
+    background: rgba(46, 204, 113, 0.1);
+    color: var(--primary-color);
+}
+
+@media (min-width: 769px) {
+    .nav-item--dropdown:hover .nav-submenu,
+    .nav-item--dropdown:focus-within .nav-submenu,
+    .nav-item--dropdown.is-open .nav-submenu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
 }
 
 /* Scroll Progress Indicator - GPU only, no shadow to reduce paint */
@@ -168,7 +366,7 @@
 /* WhatsApp Floating Button */
 .whatsapp-btn {
     position: fixed;
-    bottom: 7rem;
+    bottom: 2rem;
     right: 2rem;
     width: 50px;
     height: 50px;

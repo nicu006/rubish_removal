@@ -51,15 +51,19 @@
     align-items: center;
 }
 
-.image-placeholder {
+.about-image-figure {
+    margin: 0;
     width: 100%;
-    height: 400px;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+}
+
+.about-photo {
+    width: 100%;
+    height: clamp(220px, 40vw, 420px);
+    object-fit: cover;
+    object-position: center;
     border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     box-shadow: var(--shadow-lg);
+    display: block;
 }
 
 /* Scroll-triggered stagger (section.about.is-revealed) */

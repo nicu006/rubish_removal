@@ -11,7 +11,7 @@
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
     
-    <link rel="stylesheet" href="styles.css?v=19">
+    <link rel="stylesheet" href="styles.css?v=21">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -23,11 +23,28 @@
         <div class="container">
             <div class="nav-wrapper">
                 <a href="index.html#home" class="logo">
-                    <span class="logo-text">Easy<span style="color: var(--primary-color);">Waste</span></span>
+                    <img src="images/lOGO2.png" alt="Easy Waste" class="logo-image">
+                    <span class="logo-wordmark" aria-hidden="true">
+                        <span class="logo-main">
+                            <span>EASY</span>
+                            <span>WASTE</span>
+                        </span>
+                        <span class="logo-removal">REMOVAL</span>
+                    </span>
                 </a>
                 <ul class="nav-menu" id="navMenu">
                     <li><a href="index.html#home" class="nav-link">Home</a></li>
-                    <li><a href="services.html#services" class="nav-link">Services</a></li>
+                    <li class="nav-item nav-item--dropdown">
+                        <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="nav-services-submenu">
+                            Services
+                            <span class="nav-dropdown-chevron" aria-hidden="true"></span>
+                        </button>
+                        <ul class="nav-submenu" id="nav-services-submenu" role="menu">
+                            <li role="none"><a role="menuitem" href="bag-skip-hire.html" class="nav-sublink">Bag skip hire</a></li>
+                            <li role="none"><a role="menuitem" href="skip-hire.html" class="nav-sublink">Skip hire</a></li>
+                            <li role="none"><a role="menuitem" href="contact.html?interest=man-with-the-van#contact" class="nav-sublink">Man with the van</a></li>
+                        </ul>
+                    </li>
                     <li><a href="pricing.html#pricing" class="nav-link">Pricing</a></li>
                     <li><a href="coverage.html#coverage" class="nav-link">Coverage</a></li>
                     <li><a href="about.html#about" class="nav-link">About</a></li>
@@ -89,22 +106,6 @@
                         <div class="info-text">
                             <h3>Address</h3>
                             <p>123 Waste Management Way<br>Green City, GC 12345</p>
-                            <div class="map-container">
-                                <iframe 
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2381.5!2d-6.2603!3d53.3498!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48670e80ea27ac2f%3A0xa00c7a9973171a0!2sDublin%2C%20Ireland!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus&q=123+Waste+Management+Way,+Dublin,+Ireland" 
-                                    width="100%" 
-                                    height="360" 
-                                    style="border:0;" 
-                                    allowfullscreen="" 
-                                    loading="lazy" 
-                                    referrerpolicy="no-referrer-when-downgrade">
-                                </iframe>
-                                <div class="map-link">
-                                    <a href="https://www.google.com/maps/search/?api=1&query=123+Waste+Management+Way,+Dublin,+Ireland" target="_blank" rel="noopener noreferrer">
-                                        View larger map
-                                    </a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -136,29 +137,12 @@
                     </div>
                     <div class="form-group">
                         <select id="region" name="region" required>
-                            <option value="">Select Dublin Region</option>
-                            <option value="Dublin 1">Dublin 1</option>
-                            <option value="Dublin 2">Dublin 2</option>
-                            <option value="Dublin 3">Dublin 3</option>
-                            <option value="Dublin 4">Dublin 4</option>
-                            <option value="Dublin 5">Dublin 5</option>
-                            <option value="Dublin 6">Dublin 6</option>
-                            <option value="Dublin 6W">Dublin 6W</option>
-                            <option value="Dublin 7">Dublin 7</option>
-                            <option value="Dublin 8">Dublin 8</option>
-                            <option value="Dublin 9">Dublin 9</option>
-                            <option value="Dublin 10">Dublin 10</option>
-                            <option value="Dublin 11">Dublin 11</option>
-                            <option value="Dublin 12">Dublin 12</option>
-                            <option value="Dublin 13">Dublin 13</option>
-                            <option value="Dublin 14">Dublin 14</option>
-                            <option value="Dublin 15">Dublin 15</option>
-                            <option value="Dublin 16">Dublin 16</option>
-                            <option value="Dublin 17">Dublin 17</option>
-                            <option value="Dublin 18">Dublin 18</option>
-                            <option value="Dublin 20">Dublin 20</option>
-                            <option value="Dublin 22">Dublin 22</option>
-                            <option value="Dublin 24">Dublin 24</option>
+                            <option value="">Select your county</option>
+                            <option value="Dublin">Dublin</option>
+                            <option value="Meath">Meath</option>
+                            <option value="Louth">Louth</option>
+                            <option value="Kildare">Kildare</option>
+                            <option value="Wicklow">Wicklow</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -168,11 +152,9 @@
                     <div class="form-group image-upload-group">
                         <div class="upload-buttons">
                             <label for="images" class="image-upload-label">
-                                <span class="upload-icon">🖼️</span>
                                 <span class="upload-text">Choose Photos</span>
                             </label>
                             <button type="button" class="camera-capture-btn" id="cameraBtn">
-                                <span class="upload-icon">📸</span>
                                 <span class="upload-text">Take Photo</span>
                             </button>
                         </div>
@@ -194,7 +176,7 @@
                 <div class="footer-section">
                     <div class="logo">
                         <a href="index.html#home" class="logo-footer-link">
-                            <span class="logo-text">Easy<span style="color: var(--primary-color);">Waste</span></span>
+                            <img src="images/lOGO2.png" alt="Easy Waste" class="logo-image">
                         </a>
                     </div>
                     <p>Professional rubbish removal services you can trust. Fast, reliable, and eco-friendly.</p>
@@ -214,10 +196,10 @@
                 <div class="footer-section">
                     <h4>Services</h4>
                     <ul>
-                        <li><a href="services.html#services">Residential Removal</a></li>
-                        <li><a href="services.html#services">Commercial Removal</a></li>
-                        <li><a href="services.html#services">Bulk Collection</a></li>
-                        <li><a href="services.html#services">Recycling Services</a></li>
+                        <li><a href="bag-skip-hire.html">Bag skip hire</a></li>
+                        <li><a href="skip-hire.html">Skip hire</a></li>
+                        <li><a href="contact.html?interest=man-with-the-van#contact">Man with the van</a></li>
+                        <li><a href="services.html#services">All services</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -245,11 +227,6 @@
         </svg>
     </a>
 
-    <button class="back-to-top" id="backToTop" aria-label="Back to top">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 15l-6-6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-    </button>
 
     <script type="module" src="js/main.js"></script>
 </body>
