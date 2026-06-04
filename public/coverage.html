@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,7 @@
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
     
-    <link rel="stylesheet" href="styles.css?v=21">
+    <link rel="stylesheet" href="styles.css?v=39">
     <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,7 +25,7 @@
         <div class="container">
             <div class="nav-wrapper">
                 <a href="index.html#home" class="logo">
-                    <img src="images/lOGO2.png" alt="Easy Waste" class="logo-image">
+                    <img src="images/brand/lOGO2.png" alt="Easy Waste" class="logo-image">
                     <span class="logo-wordmark" aria-hidden="true">
                         <span class="logo-main">
                             <span>EASY</span>
@@ -42,7 +42,7 @@
                             <span class="nav-dropdown-chevron" aria-hidden="true"></span>
                         </button>
                         <ul class="nav-submenu" id="nav-services-submenu" role="menu">
-                            <li role="none"><a role="menuitem" href="bag-skip-hire.html" class="nav-sublink">Bag skip hire</a></li>
+                            <li role="none"><a role="menuitem" href="bag-skip-hire.html" class="nav-sublink">Skip bag collection</a></li>
                             <li role="none"><a role="menuitem" href="skip-hire.html" class="nav-sublink">Skip hire</a></li>
                             <li role="none"><a role="menuitem" href="contact.html?interest=man-with-the-van#contact" class="nav-sublink">Man with the van</a></li>
                         </ul>
@@ -65,18 +65,13 @@
     <!-- Coverage / Service Areas Section -->
     <section id="coverage" class="coverage">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Service Areas</h2>
-                <p class="section-subtitle">We provide rubbish removal services across our main counties</p>
+            <div class="section-header coverage-header">
+                <h2 class="section-title">Coverage <span class="section-title-accent">Areas</span></h2>
+                <p class="section-subtitle coverage-subtitle">We provide rubbish removal services across our main counties. We operate in these five counties only. Each county is filled with its own colour (like a classic county map); boundaries follow official outline data. Click a county card below to zoom.</p>
+                <span class="section-title-bar" aria-hidden="true"></span>
             </div>
             <div class="coverage-content">
                 <div class="coverage-main">
-                    <svg class="coverage-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                    <h3>Coverage Areas</h3>
-                    <p class="coverage-intro">We operate in these <strong>five counties</strong> only. Each county is <strong>filled with its own colour</strong> (like a classic county map); boundaries follow official outline data. Click a card to zoom.</p>
                     <div class="coverage-map-section">
                         <div class="coverage-map-embed">
                             <div id="coverageMap" class="coverage-map-leaflet" role="img" aria-label="Interactive map: five counties with distinct colours and a name label on each area"></div>
@@ -132,8 +127,15 @@
                     </div>
                 </div>
                 <div class="coverage-note">
-                    <p><strong>Not sure if we cover your area?</strong> Contact us and we'll let you know! We're constantly expanding our service areas to better serve our customers.</p>
-                    <a href="contact.html#contact" class="btn btn-primary">Check Your Area</a>
+                    <div class="coverage-note__inner">
+                        <div class="coverage-note__copy">
+                            <p><strong>Not sure if we cover your area?</strong> Contact us and we'll let you know! We're constantly expanding our service areas to better serve our customers.</p>
+                            <a href="contact.html#contact" class="btn btn-primary">Check Your Area</a>
+                        </div>
+                        <div class="coverage-note__art">
+                            <img src="images/coverage/card-illustration-coverage.png" alt="Illustration of a green waste truck and map pin" width="520" height="360" class="coverage-note__img" loading="lazy" decoding="async">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -145,7 +147,7 @@
                 <div class="footer-section">
                     <div class="logo">
                         <a href="index.html#home" class="logo-footer-link">
-                            <img src="images/lOGO2.png" alt="Easy Waste" class="logo-image">
+                            <img src="images/brand/lOGO2.png" alt="Easy Waste" class="logo-image">
                         </a>
                     </div>
                     <p>Professional rubbish removal services you can trust. Fast, reliable, and eco-friendly.</p>
@@ -165,7 +167,7 @@
                 <div class="footer-section">
                     <h4>Services</h4>
                     <ul>
-                        <li><a href="bag-skip-hire.html">Bag skip hire</a></li>
+                        <li><a href="bag-skip-hire.html">Skip bag collection</a></li>
                         <li><a href="skip-hire.html">Skip hire</a></li>
                         <li><a href="contact.html?interest=man-with-the-van#contact">Man with the van</a></li>
                         <li><a href="services.html#services">All services</a></li>

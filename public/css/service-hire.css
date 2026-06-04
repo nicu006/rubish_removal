@@ -95,185 +95,426 @@
     background: rgba(46, 204, 113, 0.12);
 }
 
-/* Bag-hire hero: unusual spotlight style */
+/* Skip bag collection hero — split layout (reference #2) */
 .service-hire-page--bag {
-    padding: clamp(2.6rem, 7vw, 4rem) 0 clamp(2rem, 5vw, 3rem);
-    background: #edf3f1;
+    padding-top: max(5.75rem, calc(4.5rem + env(safe-area-inset-top, 0px)));
+    padding-bottom: clamp(2rem, 4.5vw, 2.85rem);
+    padding-left: 0;
+    padding-right: 0;
+    background: linear-gradient(180deg, #f8fafb 0%, #f4f7f9 55%, #f0f4f6 100%);
+    overflow: visible;
 }
 
-.service-hire-hero--bag {
-    max-width: 820px;
+.service-hire-page--bag .container {
+    overflow: visible;
+}
+
+.bag-hire-hero {
+    max-width: 1180px;
     margin: 0 auto;
-    padding: clamp(1.2rem, 3vw, 1.9rem) clamp(1rem, 3.5vw, 2rem);
-    border-radius: 24px;
-    border: 1px solid rgba(44, 62, 80, 0.09);
-    box-shadow: none;
-    background:
-        linear-gradient(180deg, rgba(6, 24, 20, 0.62) 0%, rgba(8, 30, 24, 0.58) 100%),
-        url("../images/background-card.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
 }
 
-.service-hire-hero--bag .service-hire-title {
-    margin-bottom: 0.85rem;
-    color: #f5fbf8;
+.bag-hire-hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(300px, 1.25fr);
+    gap: clamp(0.5rem, 1.5vw, 1rem);
+    align-items: center;
+    width: 100%;
+    overflow: visible;
 }
 
-.bag-hire-quick-points {
-    margin-top: 1rem;
+.bag-hire-hero__copy {
+    text-align: left;
+    max-width: 560px;
+    padding-right: clamp(0.5rem, 2vw, 1.25rem);
+}
+
+.bag-hire-hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0 0 0.85rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--primary-dark);
+    background: rgba(46, 204, 113, 0.14);
+    border: 1px solid rgba(46, 204, 113, 0.28);
+}
+
+.bag-hire-hero__badge .bi {
+    font-size: 0.85rem;
+    line-height: 1;
+    color: var(--primary-color);
+}
+
+.bag-hire-hero__title {
+    margin: 0;
+    font-size: clamp(1.85rem, 3.8vw, 2.65rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text-dark);
+}
+
+.bag-hire-hero__title-accent {
+    color: var(--primary-color);
+}
+
+.bag-hire-hero__title-bar {
+    display: block;
+    width: 3.5rem;
+    height: 4px;
+    margin: 0.5rem 0 1rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+}
+
+.bag-hire-hero__lead {
+    margin: 0 0 0.85rem;
+    font-size: clamp(0.92rem, 1.15vw, 1rem);
+    line-height: 1.62;
+    color: var(--text-light);
+    max-width: 520px;
+}
+
+.bag-hire-hero__lead:last-of-type {
+    margin-bottom: 1.25rem;
+}
+
+.bag-hire-hero__actions {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.55rem;
+    gap: 0.65rem 0.85rem;
+    margin-bottom: 1.35rem;
 }
 
-.bag-hire-pill {
+.bag-hire-hero__btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 999px;
-    padding: 0.45rem 0.9rem;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    color: #15425a;
-    background: rgba(255, 255, 255, 0.92);
-    border: 1px solid rgba(44, 62, 80, 0.12);
-    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+    gap: 0.45rem;
+    padding: 0.8rem 1.35rem;
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    min-height: 48px;
 }
 
-.service-hire-page--bag .service-hire-eyebrow {
-    color: #7ff0a7;
+.bag-hire-hero__btn .bi {
+    font-size: 1.05rem;
+    line-height: 1;
 }
 
-.service-hire-page--bag .service-hire-title::after {
-    background: linear-gradient(90deg, #4fe28a, #32c96f);
+.bag-hire-hero__btn--primary {
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border: 2px solid transparent;
+    box-shadow: 0 6px 20px rgba(46, 204, 113, 0.32);
 }
 
-.service-hire-page--bag .hire-lead {
-    color: rgba(245, 251, 248, 0.92);
-    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+.bag-hire-hero__btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(46, 204, 113, 0.4);
+    color: #fff;
 }
 
-.service-hire-page--bag .bag-hire-pill {
-    background: rgba(255, 255, 255, 0.92);
-    color: #13334a;
+.bag-hire-hero__btn--outline {
+    color: var(--primary-dark);
+    background: var(--bg-white);
+    border: 2px solid rgba(46, 204, 113, 0.55);
+    box-shadow: 0 2px 10px rgba(44, 62, 80, 0.06);
 }
 
-/* Skip-hire hero: split layout (image + copy) */
-.service-hire-page--skip {
-    padding: clamp(2.4rem, 5.6vw, 3.25rem) 0 clamp(1.6rem, 3.8vw, 2.2rem);
-    background:
-        radial-gradient(ellipse 68% 45% at 50% -18%, rgba(46, 204, 113, 0.09) 0%, transparent 65%),
-        linear-gradient(180deg, #eef3f6 0%, #f6f8fa 48%, #f2f5f7 100%);
+.bag-hire-hero__btn--outline:hover {
+    background: rgba(46, 204, 113, 0.08);
+    border-color: var(--primary-dark);
+    color: var(--primary-dark);
+    transform: translateY(-2px);
 }
 
-.service-hire-page--skip .service-hire-hero {
-    max-width: 1040px;
-}
-
-.service-hire-split {
+.bag-hire-hero__features {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: grid;
-    grid-template-columns: minmax(420px, 1.2fr) minmax(320px, 1fr);
-    gap: clamp(1.4rem, 3vw, 2.2rem);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+    max-width: 520px;
+}
+
+.bag-hire-hero__feature {
+    display: flex;
     align-items: center;
-}
-
-.service-hire-split__media {
-    margin: 0;
-    border-radius: 14px;
-    overflow: hidden;
-    border: 1px solid rgba(44, 62, 80, 0.14);
-    box-shadow: 0 12px 32px rgba(44, 62, 80, 0.13);
-}
-
-.service-hire-split__media img {
-    display: block;
-    width: 100%;
-    height: clamp(270px, 30vw, 380px);
-    object-fit: cover;
-    object-position: center;
-}
-
-.service-hire-split__content {
-    text-align: left;
-}
-
-.service-hire-page--skip .service-hire-eyebrow {
-    margin-bottom: 0.4rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.17em;
-}
-
-.service-hire-page--skip .service-hire-title {
-    width: auto;
-    text-align: left;
-    margin-bottom: 0.4rem;
-    font-size: clamp(2rem, 3.6vw, 2.8rem);
-    line-height: 1.12;
-    letter-spacing: -0.01em;
-}
-
-.service-hire-page--skip .service-hire-title::after {
-    margin: 0.65rem 0 0;
-}
-
-.service-hire-subtitle {
-    margin: 0 0 0.85rem;
-    font-size: clamp(1.08rem, 1.55vw, 1.55rem);
-    font-weight: 700;
+    gap: 0.5rem;
+    padding: 0.65rem 0.75rem;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    background: var(--bg-white);
+    border: 1px solid rgba(44, 62, 80, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(44, 62, 80, 0.07);
     line-height: 1.25;
-    color: #0f2740;
 }
 
-.service-hire-page--skip .service-hire-split__content .hire-lead {
-    text-align: left;
+.bag-hire-hero__feature-icon {
+    flex-shrink: 0;
+    font-size: 1.15rem;
+    line-height: 1;
+    color: var(--primary-color);
+}
+
+.bag-hire-hero__visual {
+    position: relative;
+    margin: 0 clamp(-7rem, -22vw, -3.5rem) 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: clamp(300px, 40vh, 440px);
+    padding: 0;
+    overflow: visible;
+}
+
+.bag-hire-hero__visual::before {
+    content: "";
+    position: absolute;
+    inset: 2% -28% 2% -8%;
+    z-index: 0;
+    border-radius: 58% 42% 48% 52% / 42% 38% 62% 58%;
+    background: linear-gradient(145deg, #e6f6ec 0%, #c8ebd6 45%, #b5e0c8 100%);
+    transform: scale(1.2) translateX(clamp(4.5rem, 18vw, 10rem));
+    pointer-events: none;
+}
+
+.bag-hire-hero__visual img {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: auto;
+    height: clamp(320px, 46vh, 500px);
     max-width: none;
-    margin: 0;
-    font-size: clamp(0.98rem, 1.15vw, 1.07rem);
-    line-height: 1.46;
-    color: #4e5f71;
+    object-fit: contain;
+    object-position: 100% 50%;
+    transform: scale(1.45) translateX(clamp(6rem, 22vw, 14rem));
+    transform-origin: 100% 50%;
+    filter: drop-shadow(0 16px 36px rgba(44, 62, 80, 0.14));
+    pointer-events: none;
 }
 
-.service-hire-page--skip .service-hire-lead-block {
-    max-width: 980px;
-    margin: 1.45rem auto 0;
-    text-align: center;
+@media (min-width: 992px) {
+    .bag-hire-hero__visual {
+        min-height: clamp(340px, 44vh, 480px);
+        margin-right: clamp(-9rem, -26vw, -4.5rem);
+    }
+
+    .bag-hire-hero__visual::before {
+        inset: 0 -48% 0 -18%;
+        transform: scale(1.35) translateX(clamp(8rem, 28vw, 20rem));
+    }
+
+    .bag-hire-hero__visual img {
+        height: clamp(380px, 52vh, 580px);
+        transform: scale(1.72) translateX(clamp(12rem, 34vw, 28rem));
+        transform-origin: 100% 50%;
+    }
 }
 
-.service-hire-mid-title {
-    margin: 0 0 0.7rem;
-    font-size: clamp(1.4rem, 2.6vw, 2.05rem);
-    font-weight: 700;
-    line-height: 1.2;
-    color: #13263e;
+@media (min-width: 900px) {
+    .bag-hire-hero__features {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        max-width: none;
+        gap: 0.5rem;
+    }
+
+    .bag-hire-hero__feature {
+        padding: 0.7rem 0.6rem;
+        font-size: 0.72rem;
+    }
 }
 
-.service-hire-page--skip .service-hire-lead-block--centered .hire-lead {
-    max-width: 900px;
+/* Skip-hire hero: copy left, illustration right — extra top padding clears fixed navbar */
+.service-hire-page--skip {
+    padding-top: max(5.75rem, calc(4.5rem + env(safe-area-inset-top, 0px)));
+    padding-bottom: clamp(2rem, 4.5vw, 2.85rem);
+    padding-left: 0;
+    padding-right: 0;
+    background: linear-gradient(180deg, #f4f6f8 0%, #f8f9fb 55%, #f2f5f7 100%);
+    overflow: visible;
+}
+
+.skip-hire-hero {
+    max-width: 1180px;
     margin: 0 auto;
-    font-size: clamp(0.98rem, 1.15vw, 1.05rem);
 }
 
-.service-hire-page--skip .hire-actions {
-    margin-top: 1rem;
-    gap: 0.8rem;
+.skip-hire-hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(280px, 1fr);
+    gap: clamp(1rem, 2.5vw, 2.25rem);
+    align-items: start;
+    width: 100%;
+    padding: 0;
 }
 
-.service-hire-page--skip .hire-actions .btn {
-    min-width: 170px;
-    padding: 1rem 1.75rem;
+.skip-hire-hero__copy {
+    text-align: left;
+    max-width: 600px;
 }
 
-.service-hire-page--skip .hire-actions .btn-primary {
-    box-shadow: 0 8px 24px rgba(46, 204, 113, 0.22), 0 3px 10px rgba(0, 0, 0, 0.08);
+.skip-hire-hero__title {
+    margin: 0 0 1rem;
+    font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+    color: var(--text-dark);
 }
 
-.service-hire-page--skip .hire-actions .btn-secondary {
-    border-color: rgba(44, 62, 80, 0.16);
-    box-shadow: 0 6px 18px rgba(44, 62, 80, 0.08);
+.skip-hire-hero__title-line {
+    display: block;
+}
+
+.skip-hire-hero__title-accent {
+    color: var(--primary-dark);
+    white-space: nowrap;
+}
+
+.skip-hire-hero__lead {
+    margin: 0 0 1.35rem;
+    font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+    line-height: 1.6;
+    color: var(--text-light);
+    max-width: 520px;
+}
+
+.skip-hire-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    margin-bottom: 1.35rem;
+}
+
+.skip-hire-hero__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.85rem 1.65rem;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    min-height: 48px;
+}
+
+.skip-hire-hero__btn--primary {
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border: 2px solid transparent;
+    box-shadow: 0 6px 20px rgba(46, 204, 113, 0.35);
+}
+
+.skip-hire-hero__btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(46, 204, 113, 0.42);
+    color: #fff;
+}
+
+.skip-hire-hero__btn-arrow {
+    font-size: 1.05rem;
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+.skip-hire-hero__btn--primary:hover .skip-hire-hero__btn-arrow {
+    transform: translateX(3px);
+}
+
+.skip-hire-hero__btn--outline {
+    color: var(--primary-dark);
+    background: var(--bg-white);
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 2px 10px rgba(44, 62, 80, 0.06);
+}
+
+.skip-hire-hero__btn--outline:hover {
+    background: rgba(46, 204, 113, 0.08);
+    border-color: var(--primary-dark);
+    color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.skip-hire-hero__trust {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.9rem clamp(1.5rem, 4vw, 2.75rem);
+    max-width: 480px;
+    align-items: start;
+    justify-items: start;
+}
+
+.skip-hire-hero__trust-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-dark);
+    text-align: left;
+}
+
+.skip-hire-hero__trust-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    flex-shrink: 0;
+    color: var(--primary-color);
+}
+
+.skip-hire-hero__visual {
+    margin: 0;
+    margin-right: -40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: visible;
+}
+
+/* Fixed layout slot: section height unchanged; image scales visually outside the box */
+.skip-hire-hero__visual-slot {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    max-width: min(440px, 100%);
+    height: clamp(240px, 32vh, 310px);
+    margin-left: auto;
+    overflow: visible;
+    pointer-events: none;
+    transform: translate(clamp(4rem, 16vw, 11rem), clamp(1rem, 2.8vw, 2.5rem));
+}
+
+.skip-hire-hero__visual-slot img {
+    display: block;
+    width: auto;
+    height: 100%;
+    max-width: none;
+    object-fit: contain;
+    object-position: 100% 50%;
+    transform: scale(1.45);
+    transform-origin: 0% 50%;
+    pointer-events: auto;
 }
 
 @media (max-width: 768px) {
@@ -294,65 +535,136 @@
         margin-top: 1.25rem;
     }
 
-    .service-hire-hero--bag {
-        border-radius: 18px;
-        padding: 1.05rem 0.8rem 1.2rem;
+    .service-hire-page--bag {
+        padding-top: max(5.25rem, calc(4.25rem + env(safe-area-inset-top, 0px)));
+        padding-bottom: 1.75rem;
     }
 
-    .bag-hire-pill {
-        font-size: 0.74rem;
-        padding: 0.42rem 0.7rem;
-    }
-
-    .service-hire-page--skip {
-        padding: 2.15rem 0 1.35rem;
-    }
-
-    .service-hire-split {
+    .bag-hire-hero__grid {
         grid-template-columns: 1fr;
-        gap: 1rem;
+        gap: 1.25rem;
     }
 
-    .service-hire-split__media img {
-        height: clamp(210px, 52vw, 320px);
-    }
-
-    .service-hire-split__content,
-    .service-hire-page--skip .service-hire-title,
-    .service-hire-page--skip .service-hire-split__content .hire-lead {
+    .bag-hire-hero__copy {
+        max-width: none;
+        padding-right: 0;
         text-align: center;
     }
 
-    .service-hire-page--skip .service-hire-title {
-        width: 100%;
-        font-size: clamp(1.85rem, 8.2vw, 2.45rem);
+    .bag-hire-hero__badge {
+        margin-left: auto;
+        margin-right: auto;
     }
 
-    .service-hire-page--skip .service-hire-title::after {
-        margin: 0.65rem auto 0;
+    .bag-hire-hero__title-bar {
+        margin-left: auto;
+        margin-right: auto;
     }
 
-    .service-hire-subtitle {
-        font-size: clamp(1.1rem, 5.2vw, 1.45rem);
+    .bag-hire-hero__lead {
+        margin-left: auto;
+        margin-right: auto;
     }
 
-    .service-hire-mid-title {
-        font-size: clamp(1.25rem, 6vw, 1.7rem);
+    .bag-hire-hero__actions {
+        justify-content: center;
     }
 
-    .service-hire-page--skip .hire-actions .btn {
-        min-width: 150px;
-        padding: 0.95rem 1.4rem;
+    .bag-hire-hero__features {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: min(100%, 400px);
+    }
+
+    .bag-hire-hero__visual {
+        order: -1;
+        min-height: clamp(240px, 55vw, 360px);
+        margin-right: 0;
+        justify-content: center;
+    }
+
+    .bag-hire-hero__visual::before {
+        inset: 5% 0;
+        transform: scale(1.05);
+    }
+
+    .bag-hire-hero__visual img {
+        height: clamp(260px, 58vw, 400px);
+        margin: 0 auto;
+        transform: scale(1.35);
+        transform-origin: 50% 50%;
+        object-position: center center;
+    }
+
+    .service-hire-page--skip {
+        padding-top: max(5.25rem, calc(4.25rem + env(safe-area-inset-top, 0px)));
+        padding-bottom: 1.75rem;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .skip-hire-hero__grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+        padding: 0;
+    }
+
+    .skip-hire-hero__copy {
+        max-width: none;
+        text-align: center;
+    }
+
+    .skip-hire-hero__title {
+        align-items: center;
+    }
+
+    .skip-hire-hero__title-line {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .skip-hire-hero__lead {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .skip-hire-hero__actions {
+        justify-content: center;
+    }
+
+    .skip-hire-hero__trust {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: min(100%, 380px);
+        gap: 0.75rem 1.25rem;
+    }
+
+    .skip-hire-hero__visual {
+        order: -1;
+        justify-content: center;
+        margin-right: 0;
+    }
+
+    .skip-hire-hero__visual-slot {
+        max-width: min(100%, 400px);
+        height: clamp(200px, 32vh, 280px);
+        margin-left: auto;
+        margin-right: auto;
+        justify-content: center;
+        transform: none;
+    }
+
+    .skip-hire-hero__visual-slot img {
+        object-position: center center;
+        transform: scale(1.28);
+        transform-origin: 50% 50%;
     }
 }
 
 /* Skip hire product cards */
 .skip-hire-sizes {
-    padding: clamp(3rem, 6vw, 5rem) 0;
-    background:
-        radial-gradient(ellipse 70% 40% at 50% 0%, rgba(46, 204, 113, 0.06) 0%, transparent 70%),
-        linear-gradient(180deg, #e9eef2 0%, #f2f5f8 40%, #eef2f5 100%);
-    border-top: 1px solid rgba(44, 62, 80, 0.06);
+    padding: clamp(2.75rem, 6vw, 4rem) 0 clamp(2.5rem, 5vw, 3.5rem);
+    background: #f7f9fb;
 }
 
 .skip-hire-sizes__header {
@@ -427,151 +739,137 @@
 }
 
 .skip-hire-cards {
-    --sh-gap: clamp(0.9rem, 2vw, 1.35rem);
-    display: flex;
-    gap: var(--sh-gap);
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: 0;
-    scroll-behavior: smooth;
-    overscroll-behavior-x: contain;
-    -webkit-overflow-scrolling: touch;
-    padding: 0.35rem 0.15rem 1.1rem;
-    margin: 0 -0.15rem;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(52, 73, 94, 0.35) transparent;
-    cursor: grab;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: stretch;
+    gap: clamp(1.1rem, 2.2vw, 1.65rem);
+    padding: 0.35rem 0 1.1rem;
+    margin: 0;
 }
 
-.skip-hire-cards.skip-hire-cards--is-dragging {
-    cursor: grabbing;
-    user-select: none;
-    scroll-behavior: auto;
-    scroll-snap-type: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .skip-hire-cards {
-        scroll-behavior: auto;
-    }
-}
-
-.skip-hire-cards:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 4px;
-    border-radius: 12px;
-}
-
-.skip-hire-cards::-webkit-scrollbar {
-    height: 6px;
-}
-
-.skip-hire-cards::-webkit-scrollbar-track {
-    background: rgba(44, 62, 80, 0.06);
-    border-radius: 999px;
-}
-
-.skip-hire-cards::-webkit-scrollbar-thumb {
-    background: rgba(52, 73, 94, 0.35);
-    border-radius: 999px;
-}
-
-/* Three cards visible on wide layouts; fewer on narrow screens */
 .skip-hire-card {
-    flex: 0 0 calc((100% - 2 * var(--sh-gap)) / 3);
-    scroll-snap-align: start;
-    /* `always` blocks passing multiple cards in one swipe/drag */
-    scroll-snap-stop: normal;
+    position: relative;
     display: flex;
     flex-direction: column;
-    /* Soft sage / concrete tone — avoids stark white */
-    background: linear-gradient(165deg, #d8e2de 0%, #e4ebe8 42%, #dde5e1 100%);
-    border-radius: 22px;
-    overflow: hidden;
-    box-shadow:
-        0 1px 1px rgba(44, 62, 80, 0.05),
-        0 12px 36px rgba(44, 62, 80, 0.08),
-        0 2px 8px rgba(39, 174, 96, 0.06);
-    border: 1px solid rgba(44, 73, 62, 0.14);
-    transition: transform 0.28s ease, box-shadow 0.28s ease;
+    background: var(--bg-white);
+    border: 1px solid rgba(44, 62, 80, 0.1);
+    border-radius: 14px;
+    overflow: visible;
+    box-shadow: 0 4px 20px rgba(44, 62, 80, 0.07);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
-@media (max-width: 900px) {
-    .skip-hire-card {
-        flex: 0 0 calc((100% - var(--sh-gap)) / 2);
+@media (max-width: 1100px) {
+    .skip-hire-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (max-width: 560px) {
-    .skip-hire-card {
-        flex: 0 0 min(320px, calc(100vw - 3.5rem));
-    }
-
     .skip-hire-cards {
-        scroll-padding-inline: 4px;
+        grid-template-columns: 1fr;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
     }
 }
 
 .skip-hire-card:hover {
-    transform: translateY(-3px);
-    box-shadow:
-        0 2px 3px rgba(44, 62, 80, 0.05),
-        0 20px 50px rgba(44, 62, 80, 0.09),
-        0 4px 14px rgba(46, 204, 113, 0.08);
+    box-shadow: 0 10px 32px rgba(44, 62, 80, 0.1);
+    transform: translateY(-2px);
+}
+
+.skip-hire-card--featured {
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 8px 28px rgba(46, 204, 113, 0.18);
+}
+
+.skip-hire-card__popular {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    margin: 0;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--primary-color);
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.skip-hire-card__media-wrap {
+    position: relative;
+    margin: 0.65rem 0.65rem 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.skip-hire-card--featured .skip-hire-card__media-wrap {
+    margin-top: 0.9rem;
 }
 
 .skip-hire-card__media {
-    position: relative;
-    /* Flat dark — no “light” gradients; only a soft green cast under the skip */
-    background-color: #080b0e;
-    background-image: radial-gradient(
-        ellipse 95% 75% at 50% 100%,
-        rgba(46, 204, 113, 0.14) 0%,
-        transparent 50%
-    );
-    padding: 1.75rem 0.65rem 0.75rem;
-    min-height: 210px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 118px;
+    aspect-ratio: 4 / 3;
+    object-fit: contain;
+    object-position: center;
+    background-color: #0d0d0d;
 }
 
-.skip-hire-card__media img {
-    position: relative;
+.skip-hire-card__badge {
+    position: absolute;
+    top: 0.55rem;
+    left: 0.55rem;
     z-index: 1;
-    width: 100%;
-    max-width: 240px;
-    height: auto;
-    object-fit: contain;
-    /* Softer shadow — less grey “bloom” at sides */
-    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.65));
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.58rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--primary-dark);
+    border-radius: 8px;
+    line-height: 1.2;
+}
+
+.skip-hire-card__badge .bi {
+    font-size: 0.8rem;
+    line-height: 1;
+    flex-shrink: 0;
 }
 
 .skip-hire-card__body {
-    padding: 1.5rem clamp(0.45rem, 1.2vw, 0.7rem) 1.65rem;
-    text-align: center;
+    padding: 0.8rem 0.9rem 0.95rem;
+    text-align: left;
     display: flex;
     flex-direction: column;
+    gap: 0.55rem;
     flex: 1;
-    gap: 0.85rem;
 }
 
 .skip-hire-card__title {
-    font-size: 1.22rem;
+    margin: 0;
+    font-size: 1.12rem;
     font-weight: 700;
     color: var(--text-dark);
-    margin: 0;
     letter-spacing: -0.02em;
-    line-height: 1.25;
+    line-height: 1.22;
 }
 
 .skip-hire-card__desc {
     margin: 0;
     color: var(--text-light);
-    font-size: 0.92rem;
-    line-height: 1.68;
-    flex: 1;
+    line-height: 1.45;
+    font-size: 0.82rem;
 }
 
 .skip-hire-card__desc strong {
@@ -580,166 +878,459 @@
 }
 
 .skip-hire-card__specs {
+    list-style: none;
     margin: 0;
-    padding: 1rem 0 0;
-    border-top: 1px solid rgba(44, 73, 62, 0.14);
+    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0;
-    text-align: center;
+    gap: 0.5rem;
 }
 
 .skip-hire-card__spec {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    padding: 0.65rem 0;
+    display: grid;
+    grid-template-columns: 1.85rem 1fr auto;
+    align-items: center;
+    gap: 0.4rem 0.55rem;
 }
 
-.skip-hire-card__spec:not(:last-of-type) {
-    border-bottom: 1px solid rgba(44, 73, 62, 0.1);
+.skip-hire-card__spec-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.85rem;
+    height: 1.85rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(46, 204, 113, 0.14);
+    color: var(--primary-color);
 }
 
-.skip-hire-card__spec dt {
-    margin: 0;
-    font-size: 0.68rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: #5d6d7e;
-}
-
-.skip-hire-card__spec dd {
-    margin: 0;
+.skip-hire-card__spec-icon .bi {
     font-size: 0.9rem;
-    color: var(--text-dark);
-    font-weight: 500;
-    line-height: 1.4;
+    line-height: 1;
 }
 
-.skip-hire-card__spec--price {
-    padding-top: 0.75rem;
-    border-bottom: none;
+.skip-hire-card__spec-label {
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-light);
+    line-height: 1.25;
 }
 
-.skip-hire-card__spec--price dt {
-    color: var(--secondary-color);
-}
-
-.skip-hire-card__spec--price dd {
-    color: var(--primary-dark);
+.skip-hire-card__spec-value {
+    font-size: 0.86rem;
     font-weight: 700;
-    font-size: 1.05rem;
-    letter-spacing: -0.01em;
+    color: var(--text-dark);
+    text-align: right;
+    line-height: 1.25;
+    white-space: nowrap;
+}
+
+.skip-hire-card__spec--price .skip-hire-card__spec-value {
+    color: var(--primary-dark);
 }
 
 .skip-hire-card__cta {
-    margin-top: 0.35rem;
-    align-self: center;
-    min-width: 11rem;
-    border-radius: 999px;
-    box-shadow:
-        0 10px 28px rgba(46, 204, 113, 0.22),
-        0 4px 12px rgba(0, 0, 0, 0.08);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    width: 100%;
+    margin-top: auto;
+    padding: 0.65rem 0.85rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--primary-dark);
+    background: var(--bg-white);
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .skip-hire-card__cta:hover {
-    box-shadow:
-        0 14px 36px rgba(46, 204, 113, 0.28),
-        0 6px 16px rgba(0, 0, 0, 0.1);
+    background: rgba(46, 204, 113, 0.08);
+    color: var(--primary-dark);
 }
 
-/* Bag skip cards */
+.skip-hire-card__cta--featured,
+.skip-hire-card--featured .skip-hire-card__cta {
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border-color: transparent;
+    box-shadow: 0 6px 18px rgba(46, 204, 113, 0.3);
+}
+
+.skip-hire-card__cta--featured:hover,
+.skip-hire-card--featured .skip-hire-card__cta:hover {
+    color: #fff;
+    background: linear-gradient(135deg, #34d97a 0%, var(--primary-dark) 100%);
+}
+
+.skip-hire-card__cta-arrow {
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+/* Skip bag collection cards — BabySkip-style layout */
 .bag-hire-sizes {
-    padding: clamp(2.6rem, 6vw, 4rem) 0;
-    background: linear-gradient(180deg, #eff3f6 0%, #f6f8fa 48%, #f1f4f7 100%);
+    padding: clamp(2.75rem, 6vw, 4rem) 0 clamp(2.5rem, 5vw, 3.5rem);
+    background: #f7f9fb;
+}
+
+.bag-hire-sizes__header {
+    max-width: 640px;
+    margin: 0 auto 2rem;
+    text-align: center;
+}
+
+/* Leaf + tapered lines above "Bag sizes" */
+.bag-hire-sizes__decor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0 auto 0.55rem;
+}
+
+.bag-hire-sizes__decor-line {
+    flex: 0 0 auto;
+    width: 3.25rem;
+    height: 2px;
+    background-color: var(--primary-color);
+    opacity: 0.88;
+}
+
+/* Stânga: subțire la capătul exterior, puțin mai groasă spre frunză */
+.bag-hire-sizes__decor-line--left {
+    clip-path: polygon(0 50%, 100% 44%, 100% 56%);
+    -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(0, 0, 0, 0.35) 18%,
+        #000 55%,
+        #000 100%
+    );
+    mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(0, 0, 0, 0.35) 18%,
+        #000 55%,
+        #000 100%
+    );
+}
+
+/* Dreapta: subțire la capătul exterior (dreapta), îngroșare smooth spre frunză (stânga) */
+.bag-hire-sizes__decor-line--right {
+    clip-path: polygon(0 44%, 0 56%, 100% 50%);
+    -webkit-mask-image: linear-gradient(
+        to left,
+        transparent 0%,
+        rgba(0, 0, 0, 0.35) 18%,
+        #000 55%,
+        #000 100%
+    );
+    mask-image: linear-gradient(
+        to left,
+        transparent 0%,
+        rgba(0, 0, 0, 0.35) 18%,
+        #000 55%,
+        #000 100%
+    );
+}
+
+.bag-hire-sizes__decor-leaf {
+    flex-shrink: 0;
+    font-size: 1rem;
+    line-height: 1;
+    color: var(--primary-color);
+}
+
+.bag-hire-sizes__title {
+    margin: 0 0 0.65rem;
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.bag-hire-sizes__intro {
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.65;
+    color: var(--text-light);
 }
 
 .bag-hire-cards {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(1rem, 2.3vw, 1.7rem);
+    gap: clamp(1rem, 2vw, 1.5rem);
+    align-items: stretch;
 }
 
 .bag-hire-card {
+    position: relative;
     display: flex;
     flex-direction: column;
-    background: #fff;
+    background: var(--bg-white);
     border: 1px solid rgba(44, 62, 80, 0.1);
-    border-radius: 16px;
+    border-radius: 14px;
+    overflow: visible;
+    box-shadow: 0 4px 20px rgba(44, 62, 80, 0.07);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.bag-hire-card:hover {
+    box-shadow: 0 10px 32px rgba(44, 62, 80, 0.1);
+    transform: translateY(-2px);
+}
+
+.bag-hire-card--featured {
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 8px 28px rgba(46, 204, 113, 0.18);
+}
+
+.bag-hire-card__popular {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    margin: 0;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--primary-color);
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.bag-hire-card__media-wrap {
+    position: relative;
+    margin: 0.75rem 0.75rem 0;
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 8px 24px rgba(44, 62, 80, 0.08);
+}
+
+.bag-hire-card--featured .bag-hire-card__media-wrap {
+    margin-top: 1rem;
 }
 
 .bag-hire-card__media {
-    min-height: 170px;
-    background-image: url("../images/bag-skip-reference-cards.png");
-    background-size: 300% auto;
-    background-repeat: no-repeat;
-    border-bottom: 1px solid rgba(44, 62, 80, 0.08);
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 168px;
+    aspect-ratio: 4 / 3;
+    object-fit: contain;
+    object-position: center;
+    background-color: #0d0d0d;
 }
 
-.bag-hire-card__media--mini { background-position: 0% 2%; }
-.bag-hire-card__media--mega { background-position: 50% 2%; }
-.bag-hire-card__media--maxi { background-position: 100% 2%; }
+.bag-hire-card__badge {
+    position: absolute;
+    top: 0.65rem;
+    left: 0.65rem;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--primary-dark);
+    border-radius: 8px;
+    line-height: 1.2;
+}
+
+.bag-hire-card__badge .bi {
+    font-size: 0.8rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
 
 .bag-hire-card__body {
-    padding: 1rem 1rem 1.2rem;
-    text-align: center;
+    padding: 1rem 1.15rem 1.25rem;
+    text-align: left;
     display: flex;
     flex-direction: column;
-    gap: 0.7rem;
-    height: 100%;
+    gap: 0.75rem;
+    flex: 1;
 }
 
 .bag-hire-card__title {
     margin: 0;
-    font-size: 1.3rem;
-    color: #13263e;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.02em;
+    line-height: 1.25;
 }
 
 .bag-hire-card__desc {
     margin: 0;
-    color: #5d6d7e;
+    color: var(--text-light);
     line-height: 1.55;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 .bag-hire-card__specs {
+    list-style: none;
     margin: 0;
-    padding: 0.65rem 0 0;
-    border-top: 1px solid rgba(44, 62, 80, 0.08);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.bag-hire-card__spec {
     display: grid;
-    gap: 0.45rem;
+    grid-template-columns: 2rem 1fr auto;
+    align-items: center;
+    gap: 0.5rem 0.65rem;
 }
 
-.bag-hire-card__spec dt {
-    margin: 0;
-    text-transform: uppercase;
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
-    color: #5d6d7e;
-    font-weight: 700;
+.bag-hire-card__spec-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(46, 204, 113, 0.14);
+    color: var(--primary-color);
 }
 
-.bag-hire-card__spec dd {
-    margin: 0.15rem 0 0;
-    color: #1f3247;
+.bag-hire-card__spec-icon .bi {
+    font-size: 0.95rem;
+    line-height: 1;
+}
+
+.bag-hire-card__spec-label {
+    font-size: 0.68rem;
     font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-light);
+    line-height: 1.3;
+}
+
+.bag-hire-card__spec-value {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    text-align: right;
+    line-height: 1.3;
+    white-space: nowrap;
 }
 
 .bag-hire-card__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    width: 100%;
     margin-top: auto;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--primary-dark);
+    background: var(--bg-white);
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.bag-hire-card__cta:hover {
+    background: rgba(46, 204, 113, 0.08);
+    color: var(--primary-dark);
+}
+
+.bag-hire-card__cta--featured,
+.bag-hire-card--featured .bag-hire-card__cta {
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border-color: transparent;
+    box-shadow: 0 6px 18px rgba(46, 204, 113, 0.3);
+}
+
+.bag-hire-card__cta--featured:hover,
+.bag-hire-card--featured .bag-hire-card__cta:hover {
+    color: #fff;
+    background: linear-gradient(135deg, #34d97a 0%, var(--primary-dark) 100%);
+}
+
+.bag-hire-card__cta-arrow {
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.bag-hire-trust {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.25rem 2.5rem;
+}
+
+.bag-hire-trust__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-light);
+}
+
+.bag-hire-trust__icon {
+    font-size: 1.35rem;
+    line-height: 1;
+    flex-shrink: 0;
+    color: var(--primary-color);
 }
 
 @media (max-width: 980px) {
     .bag-hire-cards {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .bag-hire-card--featured {
+        grid-column: 1 / -1;
+        max-width: 420px;
+        justify-self: center;
+        width: 100%;
+    }
 }
 
 @media (max-width: 680px) {
     .bag-hire-cards {
         grid-template-columns: 1fr;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .bag-hire-card--featured {
+        grid-column: auto;
+        max-width: none;
+    }
+
+    .bag-hire-trust {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.85rem;
     }
 }

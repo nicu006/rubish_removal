@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,7 +10,7 @@
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
-    <link rel="stylesheet" href="styles.css?v=36">
+    <link rel="stylesheet" href="styles.css?v=73">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
         <div class="container">
             <div class="nav-wrapper">
                 <a href="index.html#home" class="logo">
-                    <img src="images/lOGO2.png" alt="Easy Waste" class="logo-image">
+                    <img src="images/brand/lOGO2.png" alt="Easy Waste" class="logo-image">
                     <span class="logo-wordmark" aria-hidden="true">
                         <span class="logo-main">
                             <span>EASY</span>
@@ -38,7 +38,7 @@
                             <span class="nav-dropdown-chevron" aria-hidden="true"></span>
                         </button>
                         <ul class="nav-submenu" id="nav-services-submenu" role="menu">
-                            <li role="none"><a role="menuitem" href="bag-skip-hire.html" class="nav-sublink">Bag skip hire</a></li>
+                            <li role="none"><a role="menuitem" href="bag-skip-hire.html" class="nav-sublink">Skip bag collection</a></li>
                             <li role="none"><a role="menuitem" href="skip-hire.html" class="nav-sublink" aria-current="page">Skip hire</a></li>
                             <li role="none"><a role="menuitem" href="contact.html?interest=man-with-the-van#contact" class="nav-sublink">Man with the van</a></li>
                         </ul>
@@ -60,29 +60,38 @@
 
     <section id="main" class="about service-hire-page service-hire-page--skip">
         <div class="container">
-            <header class="service-hire-hero reveal-on-scroll">
-                <div class="service-hire-split reveal-on-scroll" style="--reveal-delay: 60ms;">
-                    <figure class="service-hire-split__media reveal-on-scroll" style="--reveal-delay: 90ms;">
-                        <img src="images/skips-hero.png" alt="Easy Waste skips lined up on a work site" width="1792" height="1024" loading="lazy">
-                    </figure>
-                    <div class="service-hire-split__content reveal-on-scroll" style="--reveal-delay: 130ms;">
-                        <p class="service-hire-eyebrow">Hire services</p>
-                        <h2 class="section-title service-hire-title">Skip Hire for Businesses and Commercial Projects</h2>
-                        <p class="service-hire-subtitle">Reliable waste disposal solutions for your business</p>
-                        <p class="about-description hire-lead">
-                            Whether you are managing a construction site, renovating a commercial property, or running a retail clean-up, our skip-hire service gives your business dependable collection on schedule with less hassle.
-                        </p>
+            <header class="skip-hire-hero reveal-on-scroll">
+                <div class="skip-hire-hero__grid">
+                    <div class="skip-hire-hero__copy reveal-on-scroll" style="--reveal-delay: 60ms;">
+                        <h1 class="skip-hire-hero__title">
+                            <span class="skip-hire-hero__title-line">Reliable Skip Hire &amp;</span>
+                            <span class="skip-hire-hero__title-line">Waste Removal <span class="skip-hire-hero__title-accent">in Dublin</span></span>
+                        </h1>
+                        <p class="skip-hire-hero__lead">Fast delivery, transparent pricing, and eco-friendly disposal for homes and businesses.</p>
+                        <div class="skip-hire-hero__actions">
+                            <a href="contact.html?interest=skip-hire#contact" class="skip-hire-hero__btn skip-hire-hero__btn--primary">Book a Skip <span class="skip-hire-hero__btn-arrow" aria-hidden="true">→</span></a>
+                            <a href="pricing.html#pricing" class="skip-hire-hero__btn skip-hire-hero__btn--outline">View Prices</a>
+                        </div>
+                        <ul class="skip-hire-hero__trust">
+                            <li class="skip-hire-hero__trust-item">
+                                <i class="bi bi-clock skip-hire-hero__trust-icon" aria-hidden="true"></i>
+                                <span>Same-day availability</span>
+                            </li>
+                            <li class="skip-hire-hero__trust-item">
+                                <i class="bi bi-shield-check skip-hire-hero__trust-icon" aria-hidden="true"></i>
+                                <span>Licensed waste removal</span>
+                            </li>
+                            <li class="skip-hire-hero__trust-item">
+                                <i class="bi bi-geo-alt-fill skip-hire-hero__trust-icon" aria-hidden="true"></i>
+                                <span>Eco-friendly disposal</span>
+                            </li>
+                        </ul>
                     </div>
-                </div>
-                <div class="service-hire-lead-block service-hire-lead-block--centered reveal-on-scroll" style="--reveal-delay: 170ms;">
-                    <h3 class="service-hire-mid-title">Commercial skip sizes for every need</h3>
-                    <p class="about-description hire-lead">
-                        From small office clearances to heavy construction debris, we provide flexible skip sizes and practical guidance so you can choose the right option for one-off jobs or ongoing site work.
-                    </p>
-                </div>
-                <div class="hire-actions reveal-on-scroll" style="--reveal-delay: 210ms;">
-                    <a href="contact.html#contact" class="btn btn-primary">Request a quote</a>
-                    <a href="services.html#services" class="btn btn-secondary">All services</a>
+                    <figure class="skip-hire-hero__visual reveal-on-scroll" style="--reveal-delay: 120ms;">
+                        <span class="skip-hire-hero__visual-slot">
+                            <img src="images/skips/Illustration.png" alt="Green Easy Waste skip with Dublin skyline and trees" width="1200" height="800" loading="eager" draggable="false">
+                        </span>
+                    </figure>
                 </div>
             </header>
         </div>
@@ -94,76 +103,120 @@
                 <p class="skip-hire-sizes__eyebrow">Choose a size</p>
                 <h2 id="skip-sizes-heading" class="skip-sizes-section-title">Skip sizes</h2>
                 <p class="skip-sizes-intro">Compare capacities and dimensions at a glance. Every skip is delivered and collected on a schedule that suits your site—with advice on permits when you need them.</p>
-                <p class="skip-hire-scroll-hint" id="skip-carousel-hint"><span class="skip-hire-scroll-hint__icon" aria-hidden="true">↔</span> Drag to scroll, use the mouse wheel, or swipe on mobile to see all four sizes.</p>
             </header>
             <div class="skip-hire-carousel">
-            <div class="skip-hire-cards" tabindex="0" role="region" aria-labelledby="skip-sizes-heading" aria-describedby="skip-carousel-hint">
+            <div class="skip-hire-cards" role="region" aria-labelledby="skip-sizes-heading">
                 <article class="skip-hire-card reveal-on-scroll" style="--reveal-delay: 30ms;">
-                    <div class="skip-hire-card__media">
-                        <img src="images/skip-2cy-mini.png" alt="2 cubic yard mini skip illustration" width="480" height="360" loading="lazy" draggable="false">
+                    <div class="skip-hire-card__media-wrap">
+                        <img class="skip-hire-card__media" src="images/skips/skip-2cy-mini.png" alt="2 cubic yard mini skip" width="480" height="360" loading="lazy" decoding="async" draggable="false">
+                        <span class="skip-hire-card__badge"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> Best for small jobs</span>
                     </div>
                     <div class="skip-hire-card__body">
                         <h3 class="skip-hire-card__title">2 CY mini skip</h3>
-                        <p class="skip-hire-card__desc">Our most compact skip for tight drives and small jobs. Ideal for bathroom refreshes, shed clear-outs, and light garden waste—about <strong>15–20 black refuse bags</strong>.</p>
-                        <dl class="skip-hire-card__specs">
-                            <div class="skip-hire-card__spec"><dt>Size</dt><dd>~6 ft × 4 ft × 3 ft</dd></div>
-                            <div class="skip-hire-card__spec"><dt>Capacity</dt><dd>2 cubic yards</dd></div>
-                            <div class="skip-hire-card__spec"><dt>Max weight</dt><dd>~800 kg</dd></div>
-                            <div class="skip-hire-card__spec"><dt>Hire length</dt><dd>3-day hire (extensions available)</dd></div>
-                            <div class="skip-hire-card__spec skip-hire-card__spec--price"><dt>Price</dt><dd>From €175</dd></div>
-                        </dl>
-                        <a href="contact.html?interest=skip-2cy#contact" class="btn btn-primary skip-hire-card__cta">Book now</a>
+                        <p class="skip-hire-card__desc">Our most compact skip for tight drives and small clear-outs. Ideal for bathrooms, sheds, and light garden waste — about <strong>15–20 refuse bags</strong>.</p>
+                        <ul class="skip-hire-card__specs">
+                            <li class="skip-hire-card__spec skip-hire-card__spec--price">
+                                <span class="skip-hire-card__spec-icon" aria-hidden="true"><i class="bi bi-tag-fill"></i></span>
+                                <span class="skip-hire-card__spec-label">From</span>
+                                <span class="skip-hire-card__spec-value">€175</span>
+                            </li>
+                            <li class="skip-hire-card__spec skip-hire-card__spec--size">
+                                <span class="skip-hire-card__spec-icon" aria-hidden="true"><i class="bi bi-rulers"></i></span>
+                                <span class="skip-hire-card__spec-label">Size</span>
+                                <span class="skip-hire-card__spec-value">6×4×3 ft</span>
+                            </li>
+                            <li class="skip-hire-card__spec skip-hire-card__spec--capacity">
+                                <span class="skip-hire-card__spec-icon" aria-hidden="true"><i class="bi bi-box"></i></span>
+                                <span class="skip-hire-card__spec-label">Capacity</span>
+                                <span class="skip-hire-card__spec-value">2 CY</span>
+                            </li>
+                        </ul>
+                        <a href="contact.html?interest=skip-2cy#contact" class="skip-hire-card__cta">Select size <span class="skip-hire-card__cta-arrow" aria-hidden="true">›</span></a>
                     </div>
                 </article>
-                <article class="skip-hire-card reveal-on-scroll" style="--reveal-delay: 90ms;">
-                    <div class="skip-hire-card__media">
-                        <img src="images/skip-4cy-midi.png" alt="4 cubic yard midi skip illustration" width="480" height="360" loading="lazy">
+                <article class="skip-hire-card skip-hire-card--featured reveal-on-scroll" style="--reveal-delay: 90ms;">
+                    <p class="skip-hire-card__popular">Most popular</p>
+                    <div class="skip-hire-card__media-wrap">
+                        <img class="skip-hire-card__media" src="images/skips/skip-4cy-midi.png" alt="4 cubic yard midi skip" width="480" height="360" loading="lazy" decoding="async">
+                        <span class="skip-hire-card__badge"><i class="bi bi-tag-fill" aria-hidden="true"></i> Best value</span>
                     </div>
                     <div class="skip-hire-card__body">
                         <h3 class="skip-hire-card__title">4 CY midi skip</h3>
-                        <p class="skip-hire-card__desc">The sweet spot for kitchen rip-outs, single-room renovations, and blended household waste. Holds roughly <strong>30 black refuse bags</strong>—great for soil, rubble, and general DIY.</p>
-                        <dl class="skip-hire-card__specs">
-                            <div class="skip-hire-card__spec"><dt>Size</dt><dd>~8 ft × 5 ft × 3 ft</dd></div>
-                            <div class="skip-hire-card__spec"><dt>Capacity</dt><dd>4 cubic yards</dd></div>
-                            <div class="skip-hire-card__spec"><dt>Max weight</dt><dd>~1,500 kg</dd></div>
-                            <div class="skip-hire-card__spec"><dt>Hire length</dt><dd>3-day hire (extensions available)</dd></div>
-                            <div class="skip-hire-card__spec skip-hire-card__spec--price"><dt>Price</dt><dd>From €245</dd></div>
-                        </dl>
-                        <a href="contact.html?interest=skip-4cy#contact" class="btn btn-primary skip-hire-card__cta">Book now</a>
+                        <p class="skip-hire-card__desc">The sweet spot for kitchen rip-outs and single-room DIY. Holds roughly <strong>30 refuse bags</strong> — great for rubble and mixed household waste.</p>
+                        <ul class="skip-hire-card__specs">
+                            <li class="skip-hire-card__spec skip-hire-card__spec--price">
+                                <span class="skip-hire-card__spec-icon" aria-hidden="true"><i class="bi bi-tag-fill"></i></span>
+                                <span class="skip-hire-card__spec-label">From</span>
+                                <span class="skip-hire-card__spec-value">€245</span>
+                            </li>
+                            <li class="skip-hire-card__spec skip-hire-card__spec--size">
+                                <span class="skip-hire-card__spec-icon" aria-hidden="true"><i class="bi bi-rulers"></i></span>
+                                <span class="skip-hire-card__spec-label">Size</span>
+                                <span class="skip-hire-card__spec-value">8×5×3 ft</span>
+                            </li>
+                            <li class="skip-hire-card__spec skip-hire-card__spec--capacity">
+                                <span class="skip-hire-card__spec-icon" aria-hidden="true"><i class="bi bi-box"></i></span>
+                                <span class="skip-hire-card__spec-label">Capacity</span>
+                                <span class="skip-hire-card__spec-value">4 CY</span>
+                            </li>
+                        </ul>
+                        <a href="contact.html?interest=skip-4cy#contact" class="skip-hire-card__cta skip-hire-card__cta--featured">Select size <span class="skip-hire-card__cta-arrow" aria-hidden="true">›</span></a>
                     </div>
                 </article>
                 <article class="skip-hire-card reveal-on-scroll" style="--reveal-delay: 150ms;">
-                    <div class="skip-hire-card__media">
-                        <img src="images/skip-6cy-standard.png" alt="6 cubic yard standard builders skip illustration" width="480" height="360" loading="lazy" draggable="false">
+                    <div class="skip-hire-card__media-wrap">
+                        <img class="skip-hire-card__media" src="images/skips/skip-6cy-standard.png" alt="6 cubic yard standard builders skip" width="480" height="360" loading="lazy" decoding="async" draggable="false">
+                        <span class="skip-hire-card__badge"><i class="bi bi-hammer" aria-hidden="true"></i> Builders' choice</span>
                     </div>
                     <div class="skip-hire-card__body">
                         <h3 class="skip-hire-card__title">6 CY standard skip</h3>
-                        <p class="skip-hire-card__desc">The classic builders’ size for heavier mixed waste. Perfect for extensions, roofing scrap, and bulky clearances—around <strong>60 black refuse bags</strong> of bulky material.</p>
-                        <dl class="skip-hire-card__specs">
-                            <div class="skip-hire-card__spec"><dt>Size</dt><dd>~11 ft × 5.5 ft × 3.5 ft</dd></div>
-                            <div class="skip-hire-card__spec"><dt>Capacity</dt><dd>6 cubic yards</dd></div>
-                            <div class="skip-hire-card__spec"><dt>Max weight</dt><dd>~2,500 kg</dd></div>
-                            <div class="skip-hire-card__spec"><dt>Hire length</dt><dd>3-day hire (extensions available)</dd></div>
-                            <div class="skip-hire-card__spec skip-hire-card__spec--price"><dt>Price</dt><dd>From €370</dd></div>
-                        </dl>
-                        <a href="contact.html?interest=skip-6cy#contact" class="btn btn-primary skip-hire-card__cta">Book now</a>
+                        <p class="skip-hire-card__desc">The classic builders’ size for extensions, roofing, and heavier mixed waste. Around <strong>60 refuse bags</strong> of bulky material.</p>
+                        <ul class="skip-hire-card__specs">
+                            <li class="skip-hire-card__spec skip-hire-card__spec--price">
+                                <span class="skip-hire-card__spec-icon" aria-hidden="true"><i class="bi bi-tag-fill"></i></span>
+                                <span class="skip-hire-card__spec-label">From</span>
+                                <span class="skip-hire-card__spec-value">€370</span>
+                            </li>
+                            <li class="skip-hire-card__spec skip-hire-card__spec--size">
+                                <span class="skip-hire-card__spec-icon" aria-hidden="true"><i class="bi bi-rulers"></i></span>
+                                <span class="skip-hire-card__spec-label">Size</span>
+                                <span class="skip-hire-card__spec-value">11×5.5×3.5 ft</span>
+                            </li>
+                            <li class="skip-hire-card__spec skip-hire-card__spec--capacity">
+                                <span class="skip-hire-card__spec-icon" aria-hidden="true"><i class="bi bi-box"></i></span>
+                                <span class="skip-hire-card__spec-label">Capacity</span>
+                                <span class="skip-hire-card__spec-value">6 CY</span>
+                            </li>
+                        </ul>
+                        <a href="contact.html?interest=skip-6cy#contact" class="skip-hire-card__cta">Select size <span class="skip-hire-card__cta-arrow" aria-hidden="true">›</span></a>
                     </div>
                 </article>
                 <article class="skip-hire-card reveal-on-scroll" style="--reveal-delay: 210ms;">
-                    <div class="skip-hire-card__media">
-                        <img src="images/skip-14cy-standard.png" alt="14 cubic yard large skip illustration" width="480" height="360" loading="lazy" draggable="false">
+                    <div class="skip-hire-card__media-wrap">
+                        <img class="skip-hire-card__media" src="images/skips/skip-14cy-standard.png" alt="14 cubic yard large skip" width="480" height="360" loading="lazy" decoding="async" draggable="false">
+                        <span class="skip-hire-card__badge"><i class="bi bi-box-seam-fill" aria-hidden="true"></i> Large projects</span>
                     </div>
                     <div class="skip-hire-card__body">
                         <h3 class="skip-hire-card__title">14 CY standard skip</h3>
-                        <p class="skip-hire-card__desc">Maximum on-road capacity for major projects—shop fits, large demolitions, and whole-house clearances. Expect roughly <strong>110–120 black refuse bags</strong> of bulky mixed waste.</p>
-                        <dl class="skip-hire-card__specs">
-                            <div class="skip-hire-card__spec"><dt>Size</dt><dd>~18 ft × 6.5 ft × 6.5 ft</dd></div>
-                            <div class="skip-hire-card__spec"><dt>Capacity</dt><dd>14 cubic yards</dd></div>
-                            <div class="skip-hire-card__spec"><dt>Max weight</dt><dd>~8,000 kg (confirm for your waste type)</dd></div>
-                            <div class="skip-hire-card__spec"><dt>Hire length</dt><dd>Flexible / project hire</dd></div>
-                            <div class="skip-hire-card__spec skip-hire-card__spec--price"><dt>Price</dt><dd>From €795</dd></div>
-                        </dl>
-                        <a href="contact.html?interest=skip-14cy#contact" class="btn btn-primary skip-hire-card__cta">Book now</a>
+                        <p class="skip-hire-card__desc">Maximum on-road capacity for shop fits, demolitions, and whole-house clearances. Expect roughly <strong>110–120 refuse bags</strong>.</p>
+                        <ul class="skip-hire-card__specs">
+                            <li class="skip-hire-card__spec skip-hire-card__spec--price">
+                                <span class="skip-hire-card__spec-icon" aria-hidden="true"><i class="bi bi-tag-fill"></i></span>
+                                <span class="skip-hire-card__spec-label">From</span>
+                                <span class="skip-hire-card__spec-value">€795</span>
+                            </li>
+                            <li class="skip-hire-card__spec skip-hire-card__spec--size">
+                                <span class="skip-hire-card__spec-icon" aria-hidden="true"><i class="bi bi-rulers"></i></span>
+                                <span class="skip-hire-card__spec-label">Size</span>
+                                <span class="skip-hire-card__spec-value">18×6.5×6.5 ft</span>
+                            </li>
+                            <li class="skip-hire-card__spec skip-hire-card__spec--capacity">
+                                <span class="skip-hire-card__spec-icon" aria-hidden="true"><i class="bi bi-box"></i></span>
+                                <span class="skip-hire-card__spec-label">Capacity</span>
+                                <span class="skip-hire-card__spec-value">14 CY</span>
+                            </li>
+                        </ul>
+                        <a href="contact.html?interest=skip-14cy#contact" class="skip-hire-card__cta">Select size <span class="skip-hire-card__cta-arrow" aria-hidden="true">›</span></a>
                     </div>
                 </article>
             </div>
@@ -177,7 +230,7 @@
                 <div class="footer-section">
                     <div class="logo">
                         <a href="index.html#home" class="logo-footer-link">
-                            <img src="images/lOGO2.png" alt="Easy Waste" class="logo-image">
+                            <img src="images/brand/lOGO2.png" alt="Easy Waste" class="logo-image">
                         </a>
                     </div>
                     <p>Professional rubbish removal services you can trust. Fast, reliable, and eco-friendly.</p>
@@ -197,7 +250,7 @@
                 <div class="footer-section">
                     <h4>Services</h4>
                     <ul>
-                        <li><a href="bag-skip-hire.html">Bag skip hire</a></li>
+                        <li><a href="bag-skip-hire.html">Skip bag collection</a></li>
                         <li><a href="skip-hire.html" aria-current="page">Skip hire</a></li>
                         <li><a href="contact.html?interest=man-with-the-van#contact">Man with the van</a></li>
                         <li><a href="services.html#services">All services</a></li>

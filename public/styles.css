@@ -1,5 +1,6 @@
 /* Main stylesheet – imports all fragments. Order matters. */
 @import url('css/variables.css');
+@import url('vendor/bootstrap-icons/bootstrap-icons.min.css');
 @import url('css/base.css');
 @import url('css/nav.css');
 @import url('css/hero.css');

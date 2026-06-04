@@ -15,10 +15,38 @@
 .coverage-main {
     text-align: center;
     margin-bottom: 3rem;
-    padding: 2.5rem;
-    background: linear-gradient(135deg, var(--bg-light) 0%, #f8f9fa 100%);
-    border-radius: 15px;
-    box-shadow: var(--shadow);
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.coverage-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.coverage-header .section-title-accent {
+    color: var(--primary-color);
+}
+
+.coverage-header .coverage-subtitle {
+    max-width: 780px;
+    margin: 0 auto 1rem;
+    color: var(--text-light);
+    line-height: 1.7;
+}
+
+.coverage-header .section-title-bar {
+    display: block;
+    width: 3.5rem;
+    height: 4px;
+    margin: 0.25rem auto 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
 }
 
 .coverage-icon {
@@ -192,6 +220,47 @@
     min-width: 0;
 }
 
+/* County cards — colours match map fills (see coverage-county-map.js COUNTY_COLORS) */
+.coverage-county-card[data-county="Dublin"] {
+    --county-border: #c9a019;
+    --county-icon: #7a6210;
+    --county-icon-bg: rgba(247, 220, 111, 0.42);
+    --county-selected-bg: rgba(247, 220, 111, 0.28);
+    --county-shadow: rgba(201, 160, 25, 0.35);
+}
+
+.coverage-county-card[data-county="Meath"] {
+    --county-border: #ca6f2e;
+    --county-icon: #8b4513;
+    --county-icon-bg: rgba(235, 152, 78, 0.38);
+    --county-selected-bg: rgba(235, 152, 78, 0.26);
+    --county-shadow: rgba(202, 111, 46, 0.35);
+}
+
+.coverage-county-card[data-county="Louth"] {
+    --county-border: #4a9fd4;
+    --county-icon: #1f5f8a;
+    --county-icon-bg: rgba(133, 193, 233, 0.45);
+    --county-selected-bg: rgba(133, 193, 233, 0.28);
+    --county-shadow: rgba(74, 159, 212, 0.35);
+}
+
+.coverage-county-card[data-county="Kildare"] {
+    --county-border: #2471a3;
+    --county-icon: #154360;
+    --county-icon-bg: rgba(52, 152, 219, 0.32);
+    --county-selected-bg: rgba(52, 152, 219, 0.22);
+    --county-shadow: rgba(36, 113, 163, 0.35);
+}
+
+.coverage-county-card[data-county="Wicklow"] {
+    --county-border: #cb4335;
+    --county-icon: #922b21;
+    --county-icon-bg: rgba(236, 112, 99, 0.38);
+    --county-selected-bg: rgba(236, 112, 99, 0.24);
+    --county-shadow: rgba(203, 67, 53, 0.35);
+}
+
 .coverage-county-card {
     display: flex;
     flex-direction: column;
@@ -199,12 +268,13 @@
     text-align: center;
     width: 100%;
     margin: 0;
-    padding: 1rem 0.75rem 1.05rem;
-    background: var(--bg-white);
-    border: 1px solid rgba(46, 204, 113, 0.3);
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    padding: 1.15rem 0.85rem 1.25rem;
+    background: #fafbfc;
+    border: 1px solid rgba(44, 62, 80, 0.1);
+    border-bottom: 3px solid var(--county-border, #95a5a6);
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(44, 62, 80, 0.07);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, background 0.2s ease;
     font: inherit;
     color: inherit;
     cursor: pointer;
@@ -212,20 +282,22 @@
 }
 
 .coverage-county-card:hover {
-    border-color: var(--primary-color);
-    box-shadow: var(--shadow);
+    border-color: rgba(44, 62, 80, 0.14);
+    border-bottom-color: var(--county-border, #95a5a6);
+    box-shadow: 0 8px 24px rgba(44, 62, 80, 0.1);
     transform: translateY(-2px);
 }
 
 .coverage-county-card:focus-visible {
-    outline: 2px solid var(--primary-color);
+    outline: 2px solid var(--county-border, var(--primary-color));
     outline-offset: 3px;
 }
 
 .coverage-county-card.is-selected {
-    border-color: var(--primary-color);
-    box-shadow: var(--shadow);
-    background: rgba(46, 204, 113, 0.08);
+    background: var(--county-selected-bg, rgba(46, 204, 113, 0.12));
+    border-color: rgba(44, 62, 80, 0.12);
+    border-bottom-color: var(--county-border, var(--primary-dark));
+    box-shadow: 0 6px 22px var(--county-shadow, rgba(46, 204, 113, 0.25));
     transform: translateY(-1px);
 }
 
@@ -233,11 +305,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
-    background: rgba(46, 204, 113, 0.12);
-    color: var(--primary-color);
+    background: var(--county-icon-bg, rgba(46, 204, 113, 0.12));
+    color: var(--county-icon, var(--primary-color));
 }
 
 .coverage-county-card-icon svg {
@@ -431,32 +503,102 @@
 }
 
 .coverage-note {
-    text-align: center;
-    padding: 2rem;
+    padding: 0;
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-    border-radius: 15px;
+    border-radius: 20px;
     color: white;
     box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    max-width: 100%;
 }
 
-.coverage-note p {
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
-    line-height: 1.8;
+.coverage-note__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(140px, 0.38fr);
+    gap: clamp(1rem, 3vw, 2.25rem);
+    align-items: center;
+    padding: clamp(2rem, 4vw, 2.85rem) clamp(1.75rem, 4vw, 2.75rem);
+    min-height: clamp(210px, 26vw, 280px);
 }
 
-.coverage-note strong {
-    font-size: 1.2rem;
+.coverage-note__copy {
+    text-align: left;
 }
 
-.coverage-note .btn {
+.coverage-note__copy p {
+    margin: 0 0 1.35rem;
+    font-size: clamp(1.02rem, 1.75vw, 1.18rem);
+    line-height: 1.7;
+    max-width: 42ch;
+}
+
+.coverage-note__copy strong {
+    font-size: clamp(1.08rem, 1.85vw, 1.28rem);
+}
+
+.coverage-note__copy .btn {
     background: white;
     color: var(--primary-color);
+    margin: 0;
 }
 
-.coverage-note .btn:hover {
+.coverage-note__copy .btn:hover {
     background: var(--bg-light);
     transform: translateY(-2px);
+}
+
+.coverage-note__art {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    padding: 0;
+    overflow: visible;
+}
+
+.coverage-note__img {
+    width: 100%;
+    max-width: min(300px, 100%);
+    height: auto;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.18));
+    transform: translate(-60px, -18px) scale(2.3);
+    transform-origin: center;
+}
+
+@media (max-width: 720px) {
+    .coverage-note__inner {
+        grid-template-columns: 1fr;
+        min-height: 0;
+        padding: 1.75rem 1.35rem 2rem;
+        text-align: center;
+    }
+
+    .coverage-note__copy {
+        text-align: center;
+    }
+
+    .coverage-note__copy p {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 100%;
+    }
+
+    .coverage-note__art {
+        order: -1;
+        justify-content: center;
+        padding-bottom: 0.5rem;
+    }
+
+    .coverage-note__img {
+        max-width: min(260px, 85vw);
+        height: auto;
+        margin: 0 auto;
+        transform: scale(1.7);
+        transform-origin: center;
+    }
 }
 
 /* Scroll-triggered stagger (section.coverage.is-revealed) */

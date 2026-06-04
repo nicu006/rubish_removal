@@ -27,10 +27,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .hero-content .hero-title,
-    .hero-content .hero-subtitle,
-    .hero-content .hero-buttons,
-    .hero-features .feature-item {
+    .hero-copy,
+    .hero-cta {
         animation: none !important;
         opacity: 1 !important;
         transform: none !important;
@@ -67,8 +65,9 @@
     section.coverage .section-header,
     section.coverage .coverage-main,
     section.coverage .coverage-note,
-    section.about .about-text,
-    section.about .about-image,
+    section.about .about-copy,
+    section.about .about-visual,
+    section.about .about-banner,
     section.faq .section-header,
     section.faq .faq-container .faq-item,
     section.contact .section-header,
