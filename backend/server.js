@@ -155,7 +155,7 @@ const emailConfig = {
     }
 };
 
-const contactEmail = process.env.CONTACT_EMAIL || 'softionyxgroup@gmail.com';
+const contactEmail = process.env.CONTACT_EMAIL || 'info@easywasteremoval.ie';
 
 // Create email transporter
 const transporter = nodemailer.createTransport(emailConfig);
